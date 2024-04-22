@@ -1,0 +1,67 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+android
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# Perso
+NotesDev.docx
+src/redux/bcweb_mobapp.code-workspace
+~$tesDev.docx
+bcweb_mobapp.code-workspace
+src/components/Bc140224.js
+src/components/Bc150224.js
+app_old.json
+src/components/Bc08032024.js
+src/components/BcList18032024.js
+src/components/Bc19032024.js
+src/components/BcAcc21032024.js
+src/components/BcPce21032024.js
+src/components/Bc100424.js
+src/components/BcAcc110424.js
+src/components/BcPce110424.js
+src/components/Main110424.js
+src/components/ScanInput110424.js
+metro.config.js
+.easignore
+App1.js
+App2.js
+App3.js
+application-24*
+bundletool.jar
+eas_copy*
+eas19*
+package-lock*
+universal.apk
+yarn.lock

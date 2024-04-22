@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "bcweb",
+    "slug": "bcweb",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/BTS1.png"
+      },
+      "package": "com.pcharda.bcweb"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ae7de4e1-1cec-4ed2-8c6c-5bc47af897ff"
+      }
+    },
+    "owner": "pcharda"
+  }
+}
