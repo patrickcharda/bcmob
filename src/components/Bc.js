@@ -11,10 +11,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  Button,
   Modal,
-  SafeAreaView,
   Pressable,
   ActivityIndicator,
 } from "react-native";
@@ -531,8 +528,8 @@ const Bc = ({ tabPces }) => {
         <ScrollView>
           <Pressable onPress = {()=>{setIsLoadListOpen(!isLoadListOpen)}} style={{backgroundColor:'#007FA9'}}>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
-              <Text style={styles.defaultText}> Pièces chargées {piecesLoaded.length} / {pces.length}</Text>
-              {isLoadListOpen?<AntDesign name="downcircle" size={24} color="black" />:<AntDesign name="leftcircle" size={24} color="black" />} 
+              <Text style={{...styles.defaultText, color: 'white'}}> Pièces chargées {piecesLoaded.length} / {pces.length}</Text>
+              {isLoadListOpen?<AntDesign name="downcircle" size={24} color="white" />:<AntDesign name="leftcircle" size={24} color="white" />} 
             </View>
           </Pressable>
           {isLoadListOpen &&
@@ -561,8 +558,8 @@ const Bc = ({ tabPces }) => {
           ))}
           <Pressable onPress = {()=>{setIsLoadAccsOpen(!isLoadAccsOpen)}} style={{backgroundColor:'#007FA9'}}>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
-              <Text style={styles.defaultText}> Accessoires chargés {accsLoaded.length} / {accs.length}</Text>
-              {isLoadAccsOpen?<AntDesign name="downcircle" size={24} color="black" />:<AntDesign name="leftcircle" size={24} color="black" />} 
+              <Text style={{...styles.defaultText, color: '#ffffff'}}> Accessoires chargés {accsLoaded.length} / {accs.length}</Text>
+              {isLoadAccsOpen?<AntDesign name="downcircle" size={24} color="white" />:<AntDesign name="leftcircle" size={24} color="white" />} 
             </View>
           </Pressable>
           {isLoadAccsOpen && 

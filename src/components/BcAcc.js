@@ -1,21 +1,19 @@
 import {
   ScrollView,
-  SafeAreaView,
   Text,
   TextInput,
   Modal,
   StyleSheet,
   Button,
-  Alert,
   View,
   Pressable,
   Image
 } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { changeAccQte, changeAccObservBc, changeLoadAcc } from "../redux/actions";
 import * as React from "react";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
+/* import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons'; */
 import { AntDesign } from '@expo/vector-icons';
 
 
@@ -23,7 +21,7 @@ import { AntDesign } from '@expo/vector-icons';
 const BcAcc = ( {accessoire, loaded, headColor} ) => {
 
   let acc = accessoire;
-  let accJson = JSON.stringify(acc);
+  //let accJson = JSON.stringify(acc);
   const dispatch = useDispatch();
   let observ = acc.pdt_observ_bc;
 

@@ -3,6 +3,7 @@ import {
   View,
   Pressable,
   Text,
+  Image
 } from 'react-native';
 import LoginScreen from "./screens/LoginScreen";
 import BcListScreen from "./screens/BcListScreen";
@@ -61,10 +62,17 @@ const Main = () => {
       name="Bc" 
       component={BcScreen} 
       options={({}) => ({
+        
 /*       headerLeft: () => (
       <Pressable onPress={() => navigation.replace('BcList')}>
         <Text style={{color: 'white'}}>retour </Text>
       </Pressable>
+      ), */
+      /* headerLeft: () => (
+        <Image 
+          source={require('../../assets/chevron-left-white-removebg.png')} 
+          style={{ marginLeft: 0, width: 20, height: 20}} 
+        />
       ), */
       headerTitle: () => (
         <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '80%', marginTop: 0}}>
