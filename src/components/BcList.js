@@ -464,16 +464,20 @@ const BcList = () => {
               >
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                        <Text>ACTUALISER</Text>
-                        <Text>Voulez-vous actualiser la liste de tous les bons de chargement dont le statut n'est pas "en cours" ? 
-                          NB : pour retirer le statut "en cours" d'un bon de chargement vous devez le réinitialiser ou le valider.
+                        <Text style={styles.titleModalView}>ACTUALISER{'\n'}</Text>
+                        <Text style={styles.textModalView}>Voulez-vous actualiser la liste de tous les bons de chargement dont le statut n'est pas "en cours" ?{'\n'} 
                         </Text>
-                        <Pressable onPress={() => {handleActuConfirm(true)}}>
-                          <Text>Confirm</Text>
-                        </Pressable>
-                        <Pressable onPress={handleActuCancel}>
-                          <Text>Cancel</Text>
-                        </Pressable>
+                        <Text>
+                          NB : pour retirer le statut "en cours" d'un bon de chargement spécifique, vous devez l'ouvrir puis le réinitialiser ou le valider à l'aide des boutons appropriés.{'\n'}
+                        </Text>
+                        <View style= {styles.modalBtns}>
+                          <Pressable onPress={() => {handleActuConfirm(true)}} style= {styles.oneBtn}>
+                            <Text style= {styles.txtBtn}>Confirmer</Text>
+                          </Pressable>
+                          <Pressable onPress={handleActuCancel} style= {styles.oneBtn}>
+                            <Text style={styles.txtBtn}>Annuler</Text>
+                          </Pressable>
+                        </View>
                   </View>
                 </View>
               </Modal>
@@ -526,13 +530,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
-    margin: 20,
+    margin: 10,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -543,18 +546,38 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  titleModalView: {
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  textModalView: {
+    fontSize: 20,
+  },
+  modalBtns: {
+    flexDirection: 'row',
+    justifyContent: 'stretch',
+  },
+  oneBtn: {
+    flex: 0.5,
+    margin :2,
+    padding : 20
+  },
+  txtBtn: {
+    fontSize: 20,
+    padding: 5,
+    backgroundColor: '#007FA9',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   pseudoBtn: {
-      borderRadius: 10, 
-      borderWidth: 1,
-      borderColor: 'black',
+      borderRadius: 5, 
       padding: 10,
       overflow: 'hidden',
       fontSize: 20,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 3
+      backgroundColor:'#00334A',
+      color: '#ffffff',
+      fontWeight: 'bold',
       }
 });
 
