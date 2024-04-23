@@ -30,6 +30,14 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
   const [qte, setQte] = React.useState(acc.pdt_qte);
   const [isOpened, setIsOpened] = React.useState(false);
 
+  const textInputRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (modalVisible) {
+      textInputRef.current.focus();
+    }
+  }, [modalVisible]);
+
   const handleConfirm = (id) => {
     // Handle the confirm action here
     console.log('Confirmed:', text);
@@ -111,17 +119,24 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
                 >
                   <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                      <ScrollView>
                         <TextInput
                           style={{ height: 120, borderColor: 'gray', borderWidth: 1, textAlignVertical: 'top', textAlign: 'left' }}
                           onChangeText={setText}
                           value={text}
                           placeholder='Saisissez le texte ici'
                           multiline
+                          ref={textInputRef}
                         />
-                        <Button title="Confirm" onPress={() => handleConfirm(acc.id)} />
-                        <Button title="Cancel" onPress={handleCancel} />
-                      </ScrollView>
+                        <View style={styles.modalBtns}>
+                        {/* <Button title="Confirm" onPress={() => handleConfirm(acc.id)} />
+                        <Button title="Cancel" onPress={handleCancel} /> */}
+                          <Pressable style={styles.oneBtn} onPress={() => handleConfirm(acc.id)}>
+                            <Text style={styles.txtBtn}>Confirmer</Text>
+                          </Pressable>
+                          <Pressable style={styles.oneBtn} onPress={handleCancel}>
+                            <Text style={styles.txtBtn}>Annuler</Text>
+                          </Pressable>
+                        </View>
                     </View>
                   </View>
                 </Modal>
@@ -204,16 +219,14 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
+    alignItems: 'stetch',
   },
   modalView: {
-    maxHeight: 300,
-    margin: 20,
+    margin: 10,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
+    padding: 15,
+    alignItems: 'stretch',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -222,6 +235,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  titleModalView: {
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  textModalView: {
+    fontSize: 20,
+  },
+  modalBtns: {
+    flexDirection: 'row',
+    justifyContent: 'stretch',
+  },
+  oneBtn: {
+    flex: 0.5,
+    margin :2,
+    padding : 20
+  },
+  txtBtn: {
+    fontSize: 20,
+    padding: 5,
+    backgroundColor: '#007FA9',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

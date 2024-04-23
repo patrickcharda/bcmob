@@ -25,6 +25,14 @@ const BcPce = ( {piece, loaded, headColor} ) => {
 
   const isActionBeingExecuted = useSelector((state) => state.tokenReducer.isActionBeingPerformed);
 
+  const textInputRef = React.useRef(null);
+  
+  React.useEffect(() => {
+    if (modalVisible) {
+      textInputRef.current.focus();
+    }
+  }, [modalVisible]);
+
   const handleConfirm = () => {
     // Handle the confirm action here
     console.log('Confirmed:', text);
@@ -116,6 +124,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                           placeholder='Saisissez le texte ici'
                           multiline
                           maxLength={600}
+                          ref={textInputRef}
                         />
                         <View style={styles.modalBtns}>
                           {/* <Button title="Confirmer" onPress={handleConfirm} style={{...styles.oneBtn}}/>
