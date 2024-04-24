@@ -386,74 +386,74 @@ const BcList = () => {
     isActionBeingPerformed ? <ActivityIndicator color="red" size="large" /> : 
     <View>
       <ScrollView>
-      <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', padding: 10}}>
-       <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>Sélectionner un BC</Text>
-      </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="red" />
-      ) : (
-        <ScrollView>
-          <Pressable onPress={() => setIsOpen(!isOpen)} style={{fontWeight: 'bold', fontSize: 24,backgroundColor: '#82CFD8', padding: 5}}>
-            <Text style={{fontWeight: 'bold', fontSize: 24}}>{isOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
-          </Pressable>
-          {isOpen &&
-            data.map((bc, index) => (
-              <View style={{backgroundColor: '#CEDDDE'}}>
-              <Pressable  style={{padding: 5}} onPress={isActionBeingPerformed ? null : () => defineBc(bc)} key={index} disabled={isActionBeingPerformed}>
-                <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length}</Text>
-              </Pressable>
-              </View>
-            ))}
-        </ScrollView>
-      )}
-      <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', marginTop: 0, padding: 10}}>
-       <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>Réinitialiser un BC</Text>
-      </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="blue" />
-      ) : (
-        <View style={{marginBottom: 40}}> 
-          <Pressable onPress={() => setIsReinitOpen(!isReinitOpen)} style={{fontWeight: 'bold', fontSize: 24,backgroundColor: '#82CFD8', padding: 5}}>
-            <Text style={{fontWeight: 'bold', fontSize: 24}}>{isReinitOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
-          </Pressable>
-          { isReinitOpen &&
-            data.map((BC, idx) => (
-              <View style={{backgroundColor: '#CEDDDE'}}>
-                <Pressable onPress={() => {setModalVisible(true); setCurrentBC(BC);}} key={idx} style={{padding: 5}}>
-                  <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{BC.bc_num} | {BC.bc_statut} | nb pièces : {BC.pieces.length}</Text>
-                </Pressable>
-              </View>
-            ))
-          }
-          { modalVisible &&
-              <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={handleCancel}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                      <Text>{currentBC.bc_num}</Text>
-                      <Text>ATTENTION, en réinitialisant le BC, vous perdrez toutes les données non validées.
-                        Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement dans l'application BTSystem - BTLivraison.
-                      </Text>
-                      <Pressable onPress={() => {handleConfirm(currentBC)}}>
-                        <Text>Confirm</Text>
-                      </Pressable>
-                      <Pressable onPress={handleCancel}>
-                        <Text>Cancel</Text>
-                      </Pressable>
-                </View>
-              </View>
-            </Modal>
-          }
+        <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', padding: 10}}>
+        <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>Sélectionner un BC</Text>
         </View>
-      )} 
+        {loading ? (
+          <ActivityIndicator size="large" color="red" />
+        ) : (
+          <ScrollView>
+            <Pressable onPress={() => setIsOpen(!isOpen)} style={{fontWeight: 'bold', fontSize: 24,backgroundColor: '#82CFD8', padding: 5}}>
+              <Text style={{fontWeight: 'bold', fontSize: 24}}>{isOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
+            </Pressable>
+            {isOpen &&
+              data.map((bc, index) => (
+                <View style={{backgroundColor: '#CEDDDE'}}>
+                <Pressable  style={{padding: 5}} onPress={isActionBeingPerformed ? null : () => defineBc(bc)} key={index} disabled={isActionBeingPerformed}>
+                  <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length}</Text>
+                </Pressable>
+                </View>
+              ))}
+          </ScrollView>
+        )}
+        <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', marginTop: 0, padding: 10}}>
+        <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>Réinitialiser un BC</Text>
+        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color="blue" />
+        ) : (
+          <View style={{marginBottom: 40}}> 
+            <Pressable onPress={() => setIsReinitOpen(!isReinitOpen)} style={{fontWeight: 'bold', fontSize: 24,backgroundColor: '#82CFD8', padding: 5}}>
+              <Text style={{fontWeight: 'bold', fontSize: 24}}>{isReinitOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
+            </Pressable>
+            { isReinitOpen &&
+              data.map((BC, idx) => (
+                <View style={{backgroundColor: '#CEDDDE'}}>
+                  <Pressable onPress={() => {setModalVisible(true); setCurrentBC(BC);}} key={idx} style={{padding: 5}}>
+                    <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{BC.bc_num} | {BC.bc_statut} | nb pièces : {BC.pieces.length}</Text>
+                  </Pressable>
+                </View>
+              ))
+            }
+            { modalVisible &&
+                <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={handleCancel}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                        <Text>{currentBC.bc_num}</Text>
+                        <Text>ATTENTION, en réinitialisant le BC, vous perdrez toutes les données non validées.
+                          Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement dans l'application BTSystem - BTLivraison.
+                        </Text>
+                        <Pressable onPress={() => {handleConfirm(currentBC)}}>
+                          <Text>Confirm</Text>
+                        </Pressable>
+                        <Pressable onPress={handleCancel}>
+                          <Text>Cancel</Text>
+                        </Pressable>
+                  </View>
+                </View>
+              </Modal>
+            }
+          </View>
+        )} 
       </ScrollView>
-      <ScrollView contentContainerStyle={{flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-evenly', marginTop: 30}}>
-        <Pressable onPress={() => {setModalActualiserVisible(true);}} >
-          <Text style={styles.pseudoBtn}> Actualiser</Text>
+      <View style={{...styles.modalBtns, marginTop: 400}}>
+        <Pressable style={{...styles.oneBtn}} onPress={() => {setModalActualiserVisible(true);}} >
+          <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Actualiser</Text>
         </Pressable>
         { modalActualiserVisible &&
                 <Modal
@@ -464,7 +464,7 @@ const BcList = () => {
               >
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                        <Text style={styles.titleModalView}>ACTUALISER{'\n'}</Text>
+                        <Text style={{...styles.titleModalView, textAlign: 'center'}}>ACTUALISER{'\n'}</Text>
                         <Text style={styles.textModalView}>Voulez-vous actualiser la liste de tous les bons de chargement dont le statut n'est pas "en cours" ?{'\n'} 
                         </Text>
                         <Text>
@@ -482,10 +482,10 @@ const BcList = () => {
                 </View>
               </Modal>
         }
-        <Pressable onPress={goRefresh}>
-          <Text style={styles.pseudoBtn}> Rafraîchir</Text>
+        <Pressable style={{...styles.oneBtn}} onPress={goRefresh}>
+          <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Rafraîchir</Text>
         </Pressable>
-      </ScrollView>
+      </View>
     </View>
   );
 };
