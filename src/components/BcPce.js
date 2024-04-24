@@ -18,7 +18,7 @@ import { FontAwesome } from '@expo/vector-icons'; */
 
 
 const BcPce = ( {piece, loaded, headColor} ) => {
-
+  
   const [modalVisible, setModalVisible] = React.useState(false);
   const [text, setText] = React.useState(piece.pce_observ_bc);
   const [isOpened, setIsOpened] = React.useState(false);
@@ -27,6 +27,13 @@ const BcPce = ( {piece, loaded, headColor} ) => {
 
   const textInputRef = React.useRef(null);
   
+  let txtHeader;
+  if (headColor === '#007FA9') {
+    txtHeader = 'white';
+  } else {
+    txtHeader = 'black';
+  }
+
   React.useEffect(() => {
     if (modalVisible) {
       textInputRef.current.focus();
@@ -94,10 +101,10 @@ const BcPce = ( {piece, loaded, headColor} ) => {
           <ScrollView>
             <Pressable onPress={() => setIsOpened(!isOpened)} >
               <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems: 'flex-start', paddingRight: 5, backgroundColor: headColor}}>
-                <Text> {piece.pce_num} </Text>
-                <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%'}}>{piece.pce_nom_etude}</Text>
+                <Text style={{color: txtHeader}}> {piece.pce_num} </Text>
+                <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%', color: txtHeader}}>{piece.pce_nom_etude}</Text>
                 <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems: 'flex-start', marginRight: -5}}>
-                  <Text>Poids : {hasNullValue(piece.pce_poids)?"": formatPoids(piece)}  </Text>
+                  <Text style={{color: txtHeader}}>Poids : {hasNullValue(piece.pce_poids)?"": formatPoids(piece)}  </Text>
                   <Pressable onPress={() => dispatch(changePceLoadedStatus(pce))}>
                     {/* <Text>{loaded?<MaterialCommunityIcons name="truck-remove" size={28} color="red" />: <MaterialCommunityIcons name="truck-plus" size={28} color="green" />}</Text> */}
                     {loaded?<Image source={require('../../assets/download-box-outline.jpg')} style={{width: 40, height: 40}}/>: <Image source={require('../../assets/upload-box-outline.jpg')} style={{width: 40, height: 40}}/>}
@@ -150,8 +157,8 @@ const BcPce = ( {piece, loaded, headColor} ) => {
               <View>
                 {/* <Text>{pieceJson}</Text> */}
                 <View style={{flexDirection: 'row', justifyContent:'flex-start', alignItems: 'flex-start', backgroundColor: headColor}}>
-                  <Text style={{fontWeight: 'bold', fontStyle: 'normal', }}>Date Heure mise à jour : </Text>
-                  <Text>{hasNullValue(piece.pce_date_web)?"": strToDate(piece.pce_date_web)}</Text>
+                  <Text style={{fontWeight: 'bold', fontStyle: 'normal', color: txtHeader }}>Date Heure mise à jour : </Text>
+                  <Text style={{color: txtHeader}}>{hasNullValue(piece.pce_date_web)?"": strToDate(piece.pce_date_web)}</Text>
                 </View>
                 <View style={{flexDirection: 'row', justifyContent:'flex-start', alignItems: 'flex-start'}}>
                   <Text style={{fontWeight: 'bold', fontStyle: 'italic'}}>Etat pièce : </Text>

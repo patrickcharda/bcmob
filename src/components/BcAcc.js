@@ -32,6 +32,13 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
 
   const textInputRef = React.useRef(null);
 
+  let txtHeader;
+  if (headColor != '#007FA9') {
+    txtHeader = 'black';
+  } else {
+    txtHeader = 'white';
+  }
+
   React.useEffect(() => {
     if (modalVisible) {
       textInputRef.current.focus();
@@ -97,8 +104,8 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
           <ScrollView>
             <Pressable onPress={() => setIsOpened(!isOpened)} >
               <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems: 'flex-start', paddingRight: 5, backgroundColor: headColor}}>
-                <Text style={{ paddingLeft: 3}}>{ isOpened ? acc.pdt_code : acc.pdt_code }</Text>
-                <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%'}}>{acc.pdt_libel}</Text>
+                <Text style={{ paddingLeft: 3, color: txtHeader}}>{ isOpened ? acc.pdt_code : acc.pdt_code }</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%', color: txtHeader}}>{acc.pdt_libel}</Text>
                 {/* <Button title={loaded ? "Unload" : "Load"} onPress={() => dispatch(changeLoadAcc(acc.id))}>
                 </Button> */}
                 <Pressable onPress={() => dispatch(changeLoadAcc(acc.id))} style={{ marginRight: -4}}>
@@ -125,6 +132,7 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
                           value={text}
                           placeholder='Saisissez le texte ici'
                           multiline
+                          maxLength={600}
                           ref={textInputRef}
                         />
                         <View style={styles.modalBtns}>
@@ -160,8 +168,8 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
             { isOpened &&
               <ScrollView>
               <View style={{flexDirection: 'row', justifyContent:'flex-start', alignItems: 'flex-start', backgroundColor: headColor}}>
-                <Text style={{fontStyle: 'normal', fontWeight: 'bold'}}>Date Heure mise à jour : </Text>
-                <Text>{hasNullValue(acc.pdt_date_web)?"":strToDate(acc.pdt_date_web)}</Text>
+                <Text style={{fontStyle: 'normal', fontWeight: 'bold', color: txtHeader}}>Date Heure mise à jour : </Text>
+                <Text style={{color: txtHeader}}>{hasNullValue(acc.pdt_date_web)?"":strToDate(acc.pdt_date_web)}</Text>
               </View>
               <View style={{flexDirection: 'row', justifyContent:'flex-start', alignItems: 'flex-start'}}>
                 <Text style={{fontStyle: 'italic', fontWeight: 'bold'}}>N° de série : </Text>
