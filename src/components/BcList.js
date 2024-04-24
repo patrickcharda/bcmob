@@ -434,16 +434,18 @@ const BcList = () => {
               >
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                        <Text>{currentBC.bc_num}</Text>
-                        <Text>ATTENTION, en réinitialisant le BC, vous perdrez toutes les données non validées.
+                        <Text style={styles.titleModalView}>{currentBC.bc_num}</Text>
+                        <Text style={styles.textModalView}>ATTENTION, en réinitialisant le BC, vous perdrez toutes les données non validées.
                           Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement dans l'application BTSystem - BTLivraison.
                         </Text>
-                        <Pressable onPress={() => {handleConfirm(currentBC)}}>
-                          <Text>Confirm</Text>
-                        </Pressable>
-                        <Pressable onPress={handleCancel}>
-                          <Text>Cancel</Text>
-                        </Pressable>
+                        <View style={styles.modalBtns}>
+                          <Pressable style={styles.oneBtn} onPress={() => {handleConfirm(currentBC)}}>
+                            <Text style={styles.txtBtn}>Confirm</Text>
+                          </Pressable>
+                          <Pressable style={styles.oneBtn} onPress={handleCancel}>
+                            <Text style={styles.txtBtn}>Cancel</Text>
+                          </Pressable>
+                        </View>
                   </View>
                 </View>
               </Modal>
