@@ -1,14 +1,12 @@
-//import { CommonActions } from '@react-navigation/native';
 import Bc from '../Bc';
-import LogoutButton from "../LogoutButton";
 import ScanInput from "../ScanInput";
-import { SafeAreaView, StyleSheet, BackHandler, Button, View, Pressable, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Message from "../Message";
 import Footer from "../Footer";
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { searchPceId } from "../../redux/actions";
-import { MaterialIcons } from '@expo/vector-icons';
+import { useSelector } from "react-redux";
+/* import { searchPceId } from "../../redux/actions";
+import { MaterialIcons } from '@expo/vector-icons'; */
 
 const BcScreen = ({ route, navigation }) => {
   const { tabPces } = route.params;

@@ -15,7 +15,7 @@ const MyTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#ffffff', // Définir la couleur primaire sur blanc
+    primary: 'rgb(255, 255, 255)',
   },
 };
 
@@ -27,7 +27,7 @@ const App = () => {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer theme={MyTheme}>
-            <StatusBar style="auto" />
+            <StatusBar style="light" />
             <Main/>
           </NavigationContainer>
         </PersistGate>

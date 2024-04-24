@@ -9,6 +9,7 @@ import LoginScreen from "./screens/LoginScreen";
 import BcListScreen from "./screens/BcListScreen";
 import BcScreen from "./screens/BcScreen";
 import ShootSessionScreen from "./screens/ShootSessionScreen";
+//import { HeaderBackButton } from '@react-navigation/stack';
 //import Message from "./Message";
 import { toggleScanView } from "../redux/actions";
 import { useSelector, useDispatch } from "react-redux";  
@@ -62,20 +63,9 @@ const Main = () => {
       name="Bc" 
       component={BcScreen} 
       options={({}) => ({
-        
-/*       headerLeft: () => (
-      <Pressable onPress={() => navigation.replace('BcList')}>
-        <Text style={{color: 'white'}}>retour </Text>
-      </Pressable>
-      ), */
-      /* headerLeft: () => (
-        <Image 
-          source={require('../../assets/chevron-left-white-removebg.png')} 
-          style={{ marginLeft: 0, width: 20, height: 20}} 
-        />
-      ), */
+      headerTintColor: '#fff',
       headerTitle: () => (
-        <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '80%', marginTop: 0}}>
+        <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '85%', marginTop: 0}}>
           {/* <View>
             <Pressable onPress={() => navigation.replace('BcList')}>
               <Text style={{color: 'white'}}>retour </Text>

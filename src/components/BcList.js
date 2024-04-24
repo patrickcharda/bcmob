@@ -385,7 +385,7 @@ const BcList = () => {
   return (
     isActionBeingPerformed ? <ActivityIndicator color="red" size="large" /> : 
     <View style={{ flex: 1, justifyContent: 'flex-start'}}>
-      <ScrollView contentContainerStyle={{flex:5}}>
+      <ScrollView contentContainerStyle={{flex: 0.8}}>
         <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', padding: 10}}>
         <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>Sélectionner un BC</Text>
         </View>
@@ -453,8 +453,8 @@ const BcList = () => {
           </View>
         )} 
       </ScrollView>
-      <View style={{ flex: 1 }}>
-        <View style={{...styles.modalBtns, marginTop: 400}}>
+      <View style={{flex:0.2}}>
+        <View style={{...styles.modalBtns, marginTop: 225}}>
           <Pressable style={{...styles.oneBtn}} onPress={() => {setModalActualiserVisible(true);}} >
             <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Actualiser</Text>
           </Pressable>
