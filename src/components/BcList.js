@@ -384,8 +384,8 @@ const BcList = () => {
 
   return (
     isActionBeingPerformed ? <ActivityIndicator color="red" size="large" /> : 
-    <View>
-      <ScrollView>
+    <View style={{ flex: 1, justifyContent: 'flex-start'}}>
+      <ScrollView contentContainerStyle={{flex:5}}>
         <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', padding: 10}}>
         <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>Sélectionner un BC</Text>
         </View>
@@ -453,40 +453,42 @@ const BcList = () => {
           </View>
         )} 
       </ScrollView>
-      <View style={{...styles.modalBtns, marginTop: 400}}>
-        <Pressable style={{...styles.oneBtn}} onPress={() => {setModalActualiserVisible(true);}} >
-          <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Actualiser</Text>
-        </Pressable>
-        { modalActualiserVisible &&
-                <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalActualiserVisible}
-                onRequestClose={handleActuCancel}
-              >
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                        <Text style={{...styles.titleModalView, textAlign: 'center'}}>ACTUALISER{'\n'}</Text>
-                        <Text style={styles.textModalView}>Voulez-vous actualiser la liste de tous les bons de chargement dont le statut n'est pas "en cours" ?{'\n'} 
-                        </Text>
-                        <Text>
-                          NB : pour retirer le statut "en cours" d'un bon de chargement spécifique, vous devez l'ouvrir puis le réinitialiser ou le valider à l'aide des boutons appropriés.{'\n'}
-                        </Text>
-                        <View style= {styles.modalBtns}>
-                          <Pressable onPress={() => {handleActuConfirm(true)}} style= {styles.oneBtn}>
-                            <Text style= {styles.txtBtn}>Confirmer</Text>
-                          </Pressable>
-                          <Pressable onPress={handleActuCancel} style= {styles.oneBtn}>
-                            <Text style={styles.txtBtn}>Annuler</Text>
-                          </Pressable>
-                        </View>
+      <View style={{ flex: 1 }}>
+        <View style={{...styles.modalBtns, marginTop: 400}}>
+          <Pressable style={{...styles.oneBtn}} onPress={() => {setModalActualiserVisible(true);}} >
+            <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Actualiser</Text>
+          </Pressable>
+          { modalActualiserVisible &&
+                  <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalActualiserVisible}
+                  onRequestClose={handleActuCancel}
+                >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                          <Text style={{...styles.titleModalView, textAlign: 'center'}}>ACTUALISER{'\n'}</Text>
+                          <Text style={styles.textModalView}>Voulez-vous actualiser la liste de tous les bons de chargement dont le statut n'est pas "en cours" ?{'\n'} 
+                          </Text>
+                          <Text>
+                            NB : pour retirer le statut "en cours" d'un bon de chargement spécifique, vous devez l'ouvrir puis le réinitialiser ou le valider à l'aide des boutons appropriés.{'\n'}
+                          </Text>
+                          <View style= {styles.modalBtns}>
+                            <Pressable onPress={() => {handleActuConfirm(true)}} style= {styles.oneBtn}>
+                              <Text style= {styles.txtBtn}>Confirmer</Text>
+                            </Pressable>
+                            <Pressable onPress={handleActuCancel} style= {styles.oneBtn}>
+                              <Text style={styles.txtBtn}>Annuler</Text>
+                            </Pressable>
+                          </View>
+                    </View>
                   </View>
-                </View>
-              </Modal>
-        }
-        <Pressable style={{...styles.oneBtn}} onPress={goRefresh}>
-          <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Rafraîchir</Text>
-        </Pressable>
+                </Modal>
+          }
+          <Pressable style={{...styles.oneBtn}} onPress={goRefresh}>
+            <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Rafraîchir</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );

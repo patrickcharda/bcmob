@@ -583,22 +583,22 @@ const Bc = ({ tabPces }) => {
           {/* espace pr btns enregistrer valier et réinitialiser */}
           {/* <View style={{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'yellow', alignItems: 'stretch', flex: 1}}> */}
             <View style={{flex: 3.3, margin: 2}}>
-              <Pressable style={{backgroundColor: '#9CD2D5', padding: 3, borderRadius: 10}} onPress={() => recordBc()} disabled={isActionBeingExecuted}>
-                <Text style={{ color: '#00334A', fontSize: 20, textAlign: "center", fontWeight: 'bold' }}>Enregistrer </Text>
+              <Pressable style={{backgroundColor: '#00334A', padding: 3, borderRadius: 5}} onPress={() => recordBc()} disabled={isActionBeingExecuted}>
+                <Text style={{ color: 'white', fontSize: 20, textAlign: "center", fontWeight: 'bold' }}>Enregistrer </Text>
               </Pressable>
             </View>
             {/* <Text>{"\n"}</Text> */}
             {/* <Button onPress={() => valideBc()} title="Valider"></Button> */}
             <View style={{flex: 3.3, margin: 2}}>
-              <Pressable style={{backgroundColor: '#9CD2D5', padding: 3, borderRadius: 10}}  onPress={() => valideBc()} disabled={isActionBeingExecuted}>
-              <Text style={{ color: '#00334A', fontSize: 20, textAlign: "center", fontWeight: 'bold' }}>Valider</Text>
+              <Pressable style={{backgroundColor: '#00334A', padding: 3, borderRadius: 5}}  onPress={() => valideBc()} disabled={isActionBeingExecuted}>
+              <Text style={{ color: '#ffffff', fontSize: 20, textAlign: "center", fontWeight: 'bold' }}>Valider</Text>
               </Pressable>
               {/* <Text>{"\n"}</Text> */}
             </View>
             {/* <Button title="Réinitialiser" onPress={() => {setModalReinitVisible(true);}} /> */}
             <View style={{flex: 3.3, margin :2}}>
-              <Pressable style={{backgroundColor: '#9CD2D5', padding: 3, borderRadius: 10}}  onPress={() => {setModalReinitVisible(true);}} disabled={isActionBeingExecuted}>
-                <Text style={{ color: '#00334A', fontSize: 20, textAlign: "center", fontWeight: 'bold' }}>Réinitialiser</Text>
+              <Pressable style={{backgroundColor: '#00334A', padding: 3, borderRadius: 5}}  onPress={() => {setModalReinitVisible(true);}} disabled={isActionBeingExecuted}>
+                <Text style={{ color: '#ffffff', fontSize: 20, textAlign: "center", fontWeight: 'bold' }}>Réinitialiser</Text>
               </Pressable>
               { modalReinitVisible &&
                   <Modal
@@ -635,7 +635,7 @@ const Bc = ({ tabPces }) => {
 
 const styles = StyleSheet.create({
   container1: {
-    flex: 6
+    flex: 5
   },
   container2: {
     flex: 1
