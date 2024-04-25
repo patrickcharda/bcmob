@@ -1,14 +1,11 @@
 import {
   Text,
   StyleSheet,
-  SafeAreaView,
-  TextInput,
   Alert,
-  ScrollView,
-  TouchableOpacity,
   Button,
   BackHandler,
-  View
+  View,
+  Pressable,
 } from 'react-native';
 import { useSelector, useDispatch } from "react-redux";  
 import { addToken, addRefreshToken, toggleIsLogged } from '../redux/actions';
@@ -170,22 +167,30 @@ const Session = ({ username, password, appLogin, renewToken, hasCommandLine, app
 
   return (
 
-      <View style={styles.container}>
-        <View><Text>{`Une session est déjà ouverte pour cet utilisateur.\n
-        Vous pouvez au choix : \n\n
-          + CONTINUER - une nouvelle session prendra alors la place de l'existante \n
-          + QUITTER - pour sortir de l'application \n\n`}
-        </Text></View>
-        <View style={styles.buttons}>
-          <View style={styles.half}>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.titleModalView}>{`!!! \n`}</Text>
+          <Text style={styles.textModalView}>{`Une session est déjà ouverte pour cet utilisateur.\n
+Vous pouvez au choix : \n\n
++ CONTINUER - une nouvelle session prendra alors la place de l'existante \n
++ QUITTER - pour sortir de l'application \n\n`}
+        </Text>
+        </View>
+        <View style={styles.modalBtns}>
+          {/* <View style={styles.half}>
           <Button onPress={() => {continuer();}} title="Continuer" style={styles.button}/>
           </View>
           <View style={styles.half}>
           <Button onPress={() => BackHandler.exitApp()} title="Quitter" style={styles.button}/>
-          </View>
+          </View> */}
+          <Pressable style={styles.oneBtn} onPress={() => {continuer();}} >
+            <Text style={styles.txtBtn}>Continuer</Text>
+          </Pressable>
+          <Pressable style={styles.oneBtn} onPress={() => {continuer();}} >
+            <Text style={styles.txtBtn} onPress={() => BackHandler.exitApp()}>Quitter</Text>
+          </Pressable>
         </View>
       </View>
-
   )
 }
 
@@ -229,6 +234,50 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 3,
     marginBottom: 30,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  titleModalView: {
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  textModalView: {
+    fontSize: 20,
+  },
+  modalBtns: {
+    flexDirection: 'row',
+    justifyContent: 'stretch',
+  },
+  oneBtn: {
+    flex: 0.5,
+    margin :2,
+    padding : 20
+  },
+  txtBtn: {
+    fontSize: 20,
+    padding: 5,
+    backgroundColor: '#007FA9',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
