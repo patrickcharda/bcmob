@@ -1,27 +1,17 @@
 import {
-  ScrollView,
-  SafeAreaView,
-  Text,
   TextInput,
-  Modal,
   StyleSheet,
-  Button,
-  Alert,
   View,
   Pressable,
   Image,
 } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { changeAccQte, changeAccObservBc, changeLoadAcc, searchPceId } from "../redux/actions";
+import { useDispatch } from "react-redux";
+import { searchPceId } from "../redux/actions";
 import * as React from "react";
-import { MaterialIcons } from '@expo/vector-icons';
-
-
 
 const ScanInput =  () => {
   const [value, setValue] = React.useState(' ');
   const inputRef = React.useRef();
-  //const [scanAreaVisible, setScanAreaVisible] = React.useState(false);
 
   const focusOnInput = () => {
     inputRef.current.focus();
@@ -68,23 +58,6 @@ const ScanInput =  () => {
       </View>
     </View>
   );
-  /* return (
-    <View>
-      <View>
-        <TextInput
-          ref={inputRef}
-          value={value}
-          onChangeText={handleInputChange}
-          style={styles.scanArea}
-        />
-      </View>
-      <View style={{backgroundColor: '#9CD2D5', position : 'absolute', top: -10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', zIndex: 4444, width: '100%'}}>
-        <Pressable onPress={() => {focusOnInput(); setValue(""); setScanAreaVisible(true)}} style={{padding: 2, zIndex: 4445 }}>
-          <MaterialIcons name="qr-code-scanner" size={32} color="#ffffff" />
-        </Pressable>
-      </View>
-    </View>
-  ); */
 };
 
 const styles = StyleSheet.create({

@@ -1,15 +1,11 @@
 import {
-  ScrollView,
-  SafeAreaView,
   Text,
-  ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 import * as React from "react";
 import { useSelector } from "react-redux";
-//import Message from "./Message";
 import { useNavigation } from '@react-navigation/native';
 
 

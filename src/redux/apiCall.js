@@ -7,7 +7,7 @@ const appliname = "bcweb";
 const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString();
 
 const apiCall = (url, token, tableau = []) => (dispatch) => {
-  console.log("FINGERPRINT "+fingerprint);
+  //console.log("FINGERPRINT "+fingerprint);
   const config = {
     headers: { Authorization: `Bearer ${token}`, appliname:appliname, fingerprint:fingerprint },
   };

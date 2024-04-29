@@ -5,8 +5,7 @@ import Message from "../Message";
 import Footer from "../Footer";
 import * as React from "react";
 import { useSelector } from "react-redux";
-/* import { searchPceId } from "../../redux/actions";
-import { MaterialIcons } from '@expo/vector-icons'; */
+
 
 const BcScreen = ({ route, navigation }) => {
   const { tabPces } = route.params;
@@ -18,10 +17,8 @@ const BcScreen = ({ route, navigation }) => {
     <View style={{flex:1}}>
       <Message />
       <View style={styles.container}>
-        {/* {isActionBeingExecuted? null : <LogoutButton/> } */}
         {scanView?<ScanInput />:null}
         <Bc tabPces={ tabPces } />  
-        {/* {isActionBeingExecuted? null :<Button title="Quitter BCWeb" onPress={() => BackHandler.exitApp()} />} */}
       </View>
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 55, backgroundColor: '#00334A'}}>
         {isActionBeingExecuted? null : <Footer/>}

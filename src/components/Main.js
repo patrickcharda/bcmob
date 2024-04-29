@@ -3,21 +3,15 @@ import {
   View,
   Pressable,
   Text,
-  Image
 } from 'react-native';
 import LoginScreen from "./screens/LoginScreen";
 import BcListScreen from "./screens/BcListScreen";
 import BcScreen from "./screens/BcScreen";
 import ShootSessionScreen from "./screens/ShootSessionScreen";
-//import { HeaderBackButton } from '@react-navigation/stack';
-//import Message from "./Message";
 import { toggleScanView } from "../redux/actions";
 import { useSelector, useDispatch } from "react-redux";  
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
-
-/* const endpointBc = "https://demo-btw.monkey-soft.fr/bcweb/bcx/";
-const endpointRefreshToken = "https://demo-btw.monkey-soft.fr/refresh-token/"; */
 
 const Stack = createNativeStackNavigator();
 
@@ -41,19 +35,7 @@ const Main = () => {
           headerTintColor:'#fff',
           headerTitle: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 0 }}>
-                {/* <View style={{ flexGrow:0.5, justifyContent: 'flex-start'}}>
-                  <Image
-                  style={{ width: 50, height: 50, }}
-                  source={require('../../assets/LPB.png')}
-                  />
-                </View> */}
                 <View style={{ flexGrow:1, justifyContent: 'center' }}><Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, textAlign: 'center' }}> </Text></View>
-                {/* <View style={{ flex:1, justifyContent: 'flex-end' }}>
-                  <Image
-                  style={{ width: 50, height: 50 }}
-                  source={require('../../assets/LPB.png')}
-                  />
-                </View> */}
               </View>
           ),
         }}
@@ -66,11 +48,6 @@ const Main = () => {
       headerTintColor: '#fff',
       headerTitle: () => (
         <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '85%', marginTop: 0}}>
-          {/* <View>
-            <Pressable onPress={() => navigation.replace('BcList')}>
-              <Text style={{color: 'white'}}>retour </Text>
-            </Pressable>
-          </View> */}
           <View>
             <Pressable onPress={() => {dispatch(toggleScanView(scanView))}}>
               <MaterialIcons name="qr-code-scanner" size={40} color="#ffffff" />

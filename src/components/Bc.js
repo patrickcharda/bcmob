@@ -20,19 +20,17 @@ import * as Device from "expo-device";
 import * as Application from "expo-application";
 import axios from "axios";
 import { AntDesign } from '@expo/vector-icons';
-//import {getAndroidId} from 'react-native-device-info';
+import { BASE_URL } from "../env";
 
 const appliname = "bcweb";
 const fingerprint =
   Application.getAndroidId().toString() +
   Application.nativeBuildVersion +
   Device.deviceYearClass.toString();
-//const fingerprint2 = getAndroidId();
-//console.log("FINGERPRINT2 : "+fingerprint2);
 
 const NB_ITER = 5;
 const DELAY_N_SECONDS = 2000;
-const endpointCheckok = "https://back-xxx.monkey-soft.fr:54443/bcweb/checkok/";
+const endpointCheckok = BASE_URL+"/bcweb/checkok/";
 
 const Bc = ({ tabPces }) => {
   const token = useSelector((state) => state.tokenReducer.token);
@@ -47,7 +45,6 @@ const Bc = ({ tabPces }) => {
   const [modalReinitVisible, setModalReinitVisible] = React.useState(false);
   const navigation = useNavigation();
   const bonChargement = useSelector((state) => state.bcReducer.bc);
-  //const isActionBeingPerformed = useSelector((state) => state.tokenReducer.isActionBeingPerformed);
   const [isActionBeingExecuted, setIsActionBeingExecuted] = React.useState(false);
 
   const getFormatedDate = () => {
@@ -80,7 +77,7 @@ const Bc = ({ tabPces }) => {
   const accsLoaded = useSelector((state) => state.pcesAccsReducer.accsLoaded);
   const accsProp = useSelector((state) => state.pcesAccsReducer.accsProp);
 
-  const BASE_URL = "https://back-xxx.monkey-soft.fr:54443";
+  //const BASE_URL = "https://back-xxx.monkey-soft.fr:54443";
   const URL_SLICER_NB_CHAR = BASE_URL.length + 11;
 
   let piecesLoaded = [];
@@ -130,14 +127,14 @@ const Bc = ({ tabPces }) => {
   /* ce hook permet de récupérer les éventuels accessoires après le 1er rendu et slt après celui-ci;*/
   React.useEffect(() => {
     const getAcc = async (acc_id) => {
-      console.log(acc_id);
+      /* console.log(acc_id);
       console.log(token);
       console.log(fingerprint);
-      console.log(appliname);
+      console.log(appliname); */
       let produit;
       try {
         produit = await axios.get(
-          "https://back-xxx.monkey-soft.fr:54443/bcweb/pdt/"+acc_id,
+          BASE_URL+"/bcweb/pdt/"+acc_id,
           {
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
@@ -165,10 +162,8 @@ const Bc = ({ tabPces }) => {
         for (let i = 0; i < bonChargement.produits.length; i++) {
           acc_id = bonChargement.produits[i];
           acc_id = acc_id.slice(URL_SLICER_NB_CHAR, acc_id.length);
-          console.log("accessoire id : " + acc_id);
-          //endPointAcc = "https://back-xxx.monkey-soft.fr:54443/bcweb/pdt/"+acc_id;
           accessoire = await getAcc(acc_id);
-          console.log(accessoire);
+          //console.log(accessoire);
           if (accessoire.pdt_charge) {
             pdtsLoaded.push(accessoire);
           } else {
@@ -238,7 +233,7 @@ const Bc = ({ tabPces }) => {
         "bc_webuser": username,
       }
       result = await axios.patch(
-        "https://back-xxx.monkey-soft.fr:54443/bcweb/bc/"+bonChargement.bc_num,
+        BASE_URL+"/bcweb/bc/"+bonChargement.bc_num,
         JSON.stringify(reqBody),
         {
           headers: {
@@ -250,7 +245,7 @@ const Bc = ({ tabPces }) => {
         }
       );
     } catch (error) {
-      console.log("erreur dans la fonction recordBc du Bc ", error)
+      //console.log("erreur dans la fonction recordBc du Bc ", error)
       dispatch(defineErrormsg("erreur dans la fonction recordBc du Bc "+error))
       dispatch(defineMsg(""));
     } finally {
@@ -272,7 +267,7 @@ const Bc = ({ tabPces }) => {
       result = await valider();
       result = await checkOK();
     } catch (error) {
-      console.log("erreur dans la fonction valideBc du Bc ", error);
+      //console.log("erreur dans la fonction valideBc du Bc ", error);
       dispatch(defineErrormsg("erreur dans la fonction valideBc du Bc "+error));
       dispatch(defineMsg(""));
     } finally {
@@ -286,7 +281,7 @@ const Bc = ({ tabPces }) => {
   const valider = async() => {
     let result;
     try {
-      let endpointValider = "https://back-xxx.monkey-soft.fr:54443/bcweb/valider/"
+      let endpointValider = BASE_URL+"/bcweb/valider/"
       result = await axios.post(
         endpointValider,
         JSON.stringify({
@@ -303,7 +298,7 @@ const Bc = ({ tabPces }) => {
         }
       );
     } catch (error) {
-      console.log("erreur dans la fonction valider du Bc ", error)
+      //console.log("erreur dans la fonction valider du Bc ", error)
       dispatch(defineErrormsg("erreur dans la fonction valider du Bc "+error));
     } finally {
       return result
@@ -312,7 +307,7 @@ const Bc = ({ tabPces }) => {
   
   /* fct enregistrement d'un ensemble/lot/bloc/tableau/tronçon de pièces   */
   const patchBlocPces = async (tabDePces) => {
-    let endpointPcesToPatch = "https://back-xxx.monkey-soft.fr:54443/bcweb/pcestopatch/";
+    let endpointPcesToPatch = BASE_URL+"/bcweb/pcestopatch/";
     let result;
     try {
       dispatch(defineMsg("Enregistrement bloc des pièces du BC "));
@@ -329,7 +324,7 @@ const Bc = ({ tabPces }) => {
       }
     );
   } catch (error) {
-    console.log("erreur fonction patch bloc pieces du Bc", error)
+    //console.log("erreur fonction patch bloc pieces du Bc", error)
     dispatch(defineErrormsg("Erreur enregistrement bloc des pièces du BC "+error));
   } finally {
     return result;
@@ -338,7 +333,7 @@ const Bc = ({ tabPces }) => {
 
 
   const patchAcc = async (access) => {
-    let endpointAccToPatch = "https://back-xxx.monkey-soft.fr:54443/bcweb/pdt/"+access.id
+    let endpointAccToPatch = BASE_URL+"/bcweb/pdt/"+access.id
     let result;
     try {
       result = await axios.patch(
@@ -354,7 +349,7 @@ const Bc = ({ tabPces }) => {
         }
       );
     } catch {
-      console.log("erreur ds la fonction patch acc ", error);
+      //console.log("erreur ds la fonction patch acc ", error);
       dispatch(defineErrormsg("erreur ds la fonction patch acc "+error));
     } finally {
       return result
@@ -364,7 +359,7 @@ const Bc = ({ tabPces }) => {
 
   const postReprise = async() => {
     try {
-      let endpointReprise = "https://back-xxx.monkey-soft.fr:54443/bcweb/reprise/";
+      let endpointReprise = BASE_URL+"/bcweb/reprise/";
     await axios.post(
       endpointReprise,
       JSON.stringify({
@@ -380,7 +375,7 @@ const Bc = ({ tabPces }) => {
       }
       );
     } catch (error) {
-      console.log("erreur ds la fonction postReprise de Bc ", error)
+      //console.log("erreur ds la fonction postReprise de Bc ", error)
       dispatch(defineErrormsg("Erreur fct postReprise du BC "+error));
     }
   }
@@ -406,7 +401,7 @@ const Bc = ({ tabPces }) => {
         dispatch(defineMessage(msg));
       }
     } catch (error) {
-      console.log("erreur ds fonction reinit du Bc ", error);
+      //console.log("erreur ds fonction reinit du Bc ", error);
       dispatch(defineErrormsg("Erreur fct reinit du BC "+error));
     } finally {
       setIsActionBeingExecuted(false);
@@ -419,7 +414,7 @@ const Bc = ({ tabPces }) => {
     let fermer;
     try {
       fermer = await axios.post(
-      "https://back-xxx.monkey-soft.fr:54443/bcweb/fermer/",
+      BASE_URL+"/bcweb/fermer/",
       JSON.stringify(body),
       {
         headers: {
@@ -430,9 +425,9 @@ const Bc = ({ tabPces }) => {
         },
       }
     );
-    console.log("fermer :" + JSON.stringify(fermer));
+    //console.log("fermer :" + JSON.stringify(fermer));
     } catch (error) {
-      console.log("erreur action fermer/reinitialiser ds Bc")
+      //console.log("erreur action fermer/reinitialiser ds Bc")
       dispatch(defineErrormsg("Erreur fct reinitialiser du BC "+error));
     } finally {
       return fermer;
@@ -472,7 +467,7 @@ const Bc = ({ tabPces }) => {
         return false;
       }
     } catch (error) {
-      console.log('error fct checkOK ds Bc : '+ error);
+      //console.log('error fct checkOK ds Bc : '+ error);
       dispatch(defineErrormsg("Erreur fct checkOK du BC "+error));
       return false
     }
@@ -485,7 +480,7 @@ const Bc = ({ tabPces }) => {
 
   const handleReinitConfirm = (bonChargement) => {
     // Handle the confirm action here
-    console.log("CURRENT BC "+JSON.stringify(bonChargement));
+    //console.log("CURRENT BC "+JSON.stringify(bonChargement));
     reinit(bonChargement);
     // si le bc reinitialisé est celui sur lequel on travaillait on réinitialise le state
 
@@ -514,13 +509,6 @@ const Bc = ({ tabPces }) => {
             </View>
             <View>
               <Text style={{color:"white", fontWeight: 'bold', fontSize: 18}}>{formatPoids(poids) + " T"}</Text>
-                {/* <Text style={{color:"white", fontWeight: 'bold', fontSize: 18}}>
-                  {nbPcesChargees == 0
-                    ? "aucune pièce chargée"
-                    : nbPcesChargees === 1
-                    ? nbPcesChargees + " pièce chargée"
-                    : nbPcesChargees + " pièces chargées "}
-                </Text> */}
             </View>
           </Pressable>
 
@@ -609,18 +597,19 @@ const Bc = ({ tabPces }) => {
                 >
                   <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                          <Text>REINITIALISER</Text>
-                          <Text>ATTENTION, en réinitialisant le BC, vous perdrez toutes les données non validées.
-                            Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement dans l'application BTSystem - BTLivraison.
+                          <Text style={{...styles.titleModalView, textAlign: 'center'}}>{`REINITIALISER\n`}</Text>
+                          <Text style={styles.textModalView}>{`ATTENTION, en réinitialisant le BC, vous perdrez toutes les données non validées. 
+Réinitialiser un BC revient à le récupérer tel qu'il se trouve actuellement dans l'application BTSystem - BTLivraison.\n`}
                           </Text>
-                          { /* <Button title="Confirm" onPress={() => {handleReinitConfirm(bonChargement)}} /> */ }
-                          <Pressable onPress={() => {handleReinitConfirm(bonChargement)}} disabled={isActionBeingExecuted}>
-                            <Text>Confirm</Text>
-                          </Pressable>
-                          {/* <Button title="Cancel" onPress={handleReinitCancel}/> */}
-                          <Pressable onPress={handleReinitCancel}>
-                            <Text>Cancel</Text>
-                          </Pressable>
+                          <View style={ styles.modalBtns}>
+                            <Pressable style={styles.oneBtn} onPress={() => {handleReinitConfirm(bonChargement)}} disabled={isActionBeingExecuted}>
+                              <Text style={styles.txtBtn}>Confirmer</Text>
+                            </Pressable>
+                            {/* <Button title="Cancel" onPress={handleReinitCancel}/> */}
+                            <Pressable style={styles.oneBtn} onPress={handleReinitCancel}>
+                              <Text style={styles.txtBtn}>Annuler</Text>
+                            </Pressable>
+                          </View>
                     </View>
                   </View>
                 </Modal>
@@ -697,6 +686,50 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'stetch',
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 15,
+    alignItems: 'stretch',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  titleModalView: {
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  textModalView: {
+    fontSize: 20,
+  },
+  modalBtns: {
+    flexDirection: 'row',
+    justifyContent: 'stretch',
+  },
+  oneBtn: {
+    flex: 0.5,
+    margin :2,
+    padding : 20
+  },
+  txtBtn: {
+    fontSize: 20,
+    padding: 5,
+    backgroundColor: '#007FA9',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

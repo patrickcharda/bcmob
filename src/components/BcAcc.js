@@ -12,8 +12,6 @@ import {
 import { useDispatch } from "react-redux";
 import { changeAccQte, changeAccObservBc, changeLoadAcc } from "../redux/actions";
 import * as React from "react";
-/* import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons'; */
 import { AntDesign } from '@expo/vector-icons';
 
 
@@ -47,7 +45,7 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
 
   const handleConfirm = (id) => {
     // Handle the confirm action here
-    console.log('Confirmed:', text);
+    //console.log('Confirmed:', text);
     let obj = {'id': id, 'observ': text}
     dispatch(changeAccObservBc(obj));
     setModalVisible(false);
@@ -55,7 +53,7 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
 
   const handleCancel = () => {
     // Handle the cancel action here
-    console.log('Cancelled');
+    //console.log('Cancelled');
     setModalVisible(false);
   };
 

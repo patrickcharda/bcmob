@@ -1,7 +1,6 @@
 import {
   Text,
   StyleSheet,
-  SafeAreaView,
   TextInput,
   Alert,
   ScrollView,
@@ -16,6 +15,7 @@ import * as Device from 'expo-device';
 import * as Application from 'expo-application';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { BASE_URL } from '../env';
 
 
 const Login = () => {
@@ -29,11 +29,11 @@ const Login = () => {
   var appliname = "bcweb";
   var fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString();
   
-  const endpointRefreshToken = "https://back-xxx.monkey-soft.fr:54443/apps/apprefresh/";
-  const endpointPreLogin = "https://back-xxx.monkey-soft.fr:54443/apps/preapplogin/";
-  const endpointLogin = "https://back-xxx.monkey-soft.fr:54443/apps/applogin/";
-  const endpointLogout = "https://back-xxx.monkey-soft.fr:54443/apps/userapplogout/";
-  const endpointCommandLine = "https://back-xxx.monkey-soft.fr:54443/bcweb/hascommandline/";
+  const endpointRefreshToken = BASE_URL+"/apps/apprefresh/";
+  const endpointPreLogin = BASE_URL+"/apps/preapplogin/";
+  const endpointLogin = BASE_URL+"/apps/applogin/";
+  const endpointLogout = BASE_URL+"/apps/userapplogout/";
+  const endpointCommandLine = BASE_URL+"/bcweb/hascommandline/";
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -58,7 +58,7 @@ const Login = () => {
           },
         }
       );
-      console.log("hascommandline : "+response.data.id);
+      //console.log("hascommandline : "+response.data.id);
     } catch (error) {
       Alert.alert("Error", `There was an error while refreshing : ${error}`);
     }
@@ -66,8 +66,8 @@ const Login = () => {
 
   const renewToken = async () => {
     try {
-      console.log("the refresh token : "+refreshToken);
-      console.log("the access token : "+accessToken);
+      //console.log("the refresh token : "+refreshToken);
+      //console.log("the access token : "+accessToken);
       const response = await axios.post(
         endpointRefreshToken,
         JSON.stringify({
@@ -83,10 +83,10 @@ const Login = () => {
         }
       ); 
       dispatch(addToken(response.data.access));
-      console.log("the new access token : "+accessToken);
+      //console.log("the new access token : "+accessToken);
       dispatch(addUser(username));
       dispatch(toggleIsLogged(logged));
-      console.log("the new logged value : "+logged);
+      //console.log("the new logged value : "+logged);
       await hasCommandLine();
     } catch (error) {
       Alert.alert("Error", `There was an error while refreshing : ${error}`);
@@ -95,8 +95,8 @@ const Login = () => {
 
   const appLogin = async () => {
     try {
-      console.log("the fingerprint is : "+fingerprint);
-      console.log("the appliname is : "+appliname);
+      //console.log("the fingerprint is : "+fingerprint);
+      //console.log("the appliname is : "+appliname);
       const response = await axios.post(
         endpointLogin,
         JSON.stringify({
@@ -112,14 +112,14 @@ const Login = () => {
         }
       );
       accessToken = response.data.access;
-      console.log("second access token "+accessToken);
+      //console.log("second access token "+accessToken);
       refreshToken = response.data.refresh;
-      console.log("second refresh token "+refreshToken);
+      //console.log("second refresh token "+refreshToken);
       dispatch(addToken(accessToken));
       dispatch(addRefreshToken(refreshToken));
       await renewToken();
     }  catch (error) {
-      //Alert.alert("Error", `There was an error while logging: ${error}`);
+      Alert.alert("Error", `There was an error while logging: ${error}`);
     }
   };
 
@@ -156,12 +156,12 @@ const Login = () => {
         }
       );
       let hasSession = response.data.opened_session;
-      console.log(hasSession);
+      //console.log(hasSession);
       if (hasSession === "no") {
         /* appeler fonction asynchrone de login */
         await appLogin();
       } else {
-        console.log("session déjà ouverte");
+        //console.log("session déjà ouverte");
         navigation.push('ShootSession', { username, password, appLogin, renewToken, hasCommandLine, appLogout, endpointRefreshToken, endpointLogin, endpointLogout, endpointCommandLine, appliname, fingerprint })
       }
     } catch (error) {
@@ -181,12 +181,6 @@ const Login = () => {
             placeholder="Username"
             placeholderTextColor="#333333"
         />
-        {/* <TextInput
-            style={styles.input}
-            onChangeText={onPasswordChange}
-            value={password}
-            placeholder="Password"
-        /> */}
         <View style={{...styles.input, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 7 }}>
           <TextInput
             style={{fontSize: 20, color: '#000000'}}

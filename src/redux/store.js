@@ -6,7 +6,6 @@ import bcReducer from "./bcReducer";
 import pcesAccsReducer from "./pcesAccsReducer";
 import {createLogger} from 'redux-logger';
 import thunk from 'redux-thunk';
-//import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExpoFileSystemStorage from 'redux-persist-expo-filesystem';
 
 import {
@@ -48,15 +47,6 @@ const store = configureStore({
     },
   }).concat(thunk, logger),
 });
-
-/* const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-  }),
-}); */
 
 const persistor = persistStore(store)
 

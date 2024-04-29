@@ -35,25 +35,6 @@ const initialState = {
   accsProp:[],
 };
 
-/* const getFormatedDate = () => {
-  let dateMajBLModifie = new Date();
-  //formater la date pr la persister
-  let formatedDate =
-    dateMajBLModifie.getFullYear() +
-    "-" +
-    (dateMajBLModifie.getMonth() + 1) +
-    "-" +
-    dateMajBLModifie.getDate();
-  formatedDate +=
-    "T" +
-    dateMajBLModifie.getHours() +
-    ":" +
-    dateMajBLModifie.getMinutes() +
-    ":" +
-    dateMajBLModifie.getSeconds();
-  return formatedDate;
-} */
-
 const getFormatedDate = () => {
   let dateMajBLModifie = new Date();
   let formatedDate =

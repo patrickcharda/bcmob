@@ -13,9 +13,6 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { changePceLoadedStatus, changePceObservBc } from "../redux/actions";
 import * as React from "react";
-/* import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons'; */
-
 
 const BcPce = ( {piece, loaded, headColor} ) => {
   
@@ -42,7 +39,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
 
   const handleConfirm = () => {
     // Handle the confirm action here
-    console.log('Confirmed:', text);
+    //console.log('Confirmed:', text);
     let data = {
       "piece": piece,
       "texte": text,
@@ -53,7 +50,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
 
   const handleCancel = () => {
     // Handle the cancel action here
-    console.log('Cancelled');
+    //console.log('Cancelled');
     setModalVisible(false);
   };
 

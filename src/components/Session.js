@@ -2,141 +2,22 @@ import {
   Text,
   StyleSheet,
   Alert,
-  Button,
   BackHandler,
   View,
   Pressable,
 } from 'react-native';
-import { useSelector, useDispatch } from "react-redux";  
-import { addToken, addRefreshToken, toggleIsLogged } from '../redux/actions';
+import { useSelector } from "react-redux";  
 import * as React from "react";
 import axios from 'axios';
 
+const Session = ({ username, appLogin, endpointLogout, appliname }) => {
 
-
-const Session = ({ username, password, appLogin, renewToken, hasCommandLine, appLogout, endpointRefreshToken, endpointLogin, endpointLogout, endpointCommandLine, appliname, fingerprint }) => {
-
-   const dispatch = useDispatch();
-
-  //const token = useSelector((state) => state.tokenReducer.token);
-  //const refreshToken = useSelector((state) => state.tokenReducer.refreshToken);
   var logged = useSelector((state) => state.tokenReducer.isLogged);
   console.log("first logged "+logged);
   var refreshToken = useSelector((state) => state.tokenReducer.refreshToken);
   console.log("first refresh token "+refreshToken);
   var accessToken = useSelector((state) => state.tokenReducer.token);
   console.log("first token "+accessToken);
-  /*var appliname = "bcweb";
-  var fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString(); */
-  
-  /* const endpointRefreshToken = "https://back-xxx.monkey-soft.fr:54443/apps/apprefresh/";
-  //const endpointLogin = "https://demo-btw.monkey-soft.fr/login/";
-  const endpointPreLogin = "https://back-xxx.monkey-soft.fr:54443/apps/preapplogin/";
-  const endpointLogin = "https://back-xxx.monkey-soft.fr:54443/apps/applogin/";
-  const endpointLogout = "https://back-xxx.monkey-soft.fr:54443/apps/userapplogout/";
-  const endpointCommandLine = "https://back-xxx.monkey-soft.fr:54443/bcweb/hascommandline/"; */
-
-  
-  /* const hasCommandLine = async () => {
-    try {
-      const response = await axios.post(
-        endpointCommandLine,
-        JSON.stringify({
-          username: username,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            "Authorization": accessToken,
-            "appliname": appliname,
-            "fingerprint": fingerprint,
-          },
-        }
-      );
-      console.log("hascommandline : "+response.data.id);
-    } catch (error) {
-      Alert.alert("Error", `There was an error while refreshing : ${error}`);
-    }
-  };
-
-  const renewToken = async () => {
-    try {
-      console.log("the refresh token : "+refreshToken);
-      console.log("the access token : "+accessToken);
-      const response = await axios.post(
-        endpointRefreshToken,
-        JSON.stringify({
-          refresh: refreshToken,
-          access: accessToken,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            "appliname": appliname,
-            "fingerprint": fingerprint,
-          },
-        }
-      );
-      //let tok = response.data.access + "€";
-      console.log("TEST");
-      
-      dispatch(addToken(response.data.access));
-      console.log("the new access token : "+accessToken);
-      dispatch(toggleIsLogged(logged));
-      console.log("the new logged value : "+logged);
-      await hasCommandLine();
-      //Alert.alert("new AccessToken : ", response.data.access);
-    } catch (error) {
-      //Alert.alert("Error", `There was an error while refreshing : ${error}`);
-    }
-  };
-
-  const appLogin = async () => {
-    try {
-      console.log("the fingerprint is : "+fingerprint);
-      console.log("the appliname is : "+appliname);
-      const response = await axios.post(
-        endpointLogin,
-        JSON.stringify({
-          username: username,
-          password: password,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            "appliname": appliname,
-            "fingerprint": fingerprint,
-          },
-        }
-      );
-      accessToken = response.data.access;
-      console.log("second access token "+accessToken);
-      refreshToken = response.data.refresh;
-      console.log("second refresh token "+refreshToken);
-      dispatch(addToken(accessToken));
-      dispatch(addRefreshToken(refreshToken));
-      await renewToken();
-    }  catch (error) {
-      //Alert.alert("Error", `There was an error while logging: ${error}`);
-    }
-  };
-
-  const appLogout = async () => {
-    try {
-      const response = await axios.get(
-        endpointLogout,
-        {
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            "appliname": appliname,
-            "username": username,
-          },
-        }
-      );
-    } catch (error) {
-      //Alert.alert("Error", `There was an error while logging: ${error}`);
-    }
-  }; */
 
   const userAppLogout = async () => {
     try {
@@ -166,31 +47,24 @@ const Session = ({ username, password, appLogin, renewToken, hasCommandLine, app
 
 
   return (
-
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.titleModalView}>{`!!! \n`}</Text>
           <Text style={styles.textModalView}>{`Une session est déjà ouverte pour cet utilisateur.\n
-Vous pouvez au choix : \n\n
-+ CONTINUER - une nouvelle session prendra alors la place de l'existante \n
-+ QUITTER - pour sortir de l'application \n\n`}
+Vous pouvez au choix : \n
++ CONTINUER - une nouvelle session prendra alors la place de l'existante
++ QUITTER - pour sortir de l'application \n`}
         </Text>
-        </View>
-        <View style={styles.modalBtns}>
-          {/* <View style={styles.half}>
-          <Button onPress={() => {continuer();}} title="Continuer" style={styles.button}/>
-          </View>
-          <View style={styles.half}>
-          <Button onPress={() => BackHandler.exitApp()} title="Quitter" style={styles.button}/>
-          </View> */}
+      </View>
+      <View style={styles.modalBtns}>
           <Pressable style={styles.oneBtn} onPress={() => {continuer();}} >
             <Text style={styles.txtBtn}>Continuer</Text>
           </Pressable>
           <Pressable style={styles.oneBtn} onPress={() => {continuer();}} >
             <Text style={styles.txtBtn} onPress={() => BackHandler.exitApp()}>Quitter</Text>
           </Pressable>
-        </View>
       </View>
+    </View>
   )
 }
 

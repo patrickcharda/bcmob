@@ -1,6 +1,5 @@
 import {
   View,
-  SafeAreaView,
   Text,
   StyleSheet,
   Modal,
@@ -11,9 +10,8 @@ import {
   Image,
 } from "react-native";
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { recordSelectedBc } from "../redux/actions";
-import { FontAwesome } from '@expo/vector-icons';
 
 const BcHeader = ({ currentBc }) => {
 
@@ -25,7 +23,7 @@ const BcHeader = ({ currentBc }) => {
 
   const handleConfirm = (bc) => {
     // Handle the confirm action here
-    console.log('OBSERVATIONS BC ', text);
+    //console.log('OBSERVATIONS BC ', text);
     const updatedBc = { ...bc, bc_observ: text };
     dispatch(recordSelectedBc(updatedBc));
     setModalVisible(false);
@@ -33,7 +31,7 @@ const BcHeader = ({ currentBc }) => {
 
   const handleCancel = () => {
     // Handle the cancel action here
-    console.log('Cancelled');
+    //console.log('Cancelled');
     setModalVisible(false);
   };
 

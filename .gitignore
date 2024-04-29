@@ -65,3 +65,4 @@ eas19*
 package-lock*
 universal.apk
 yarn.lock
+src/env.js

@@ -1,25 +1,22 @@
 import {
   ScrollView,
-  SafeAreaView,
   Text,
   ActivityIndicator,
   StyleSheet,
-  TouchableOpacity,
   View,
   Modal,
-  Button,
   Pressable,
 } from "react-native";
 import apiCall from "../redux/apiCall";
 import axios from 'axios';
-import { recordSelectedBc, purgePcesAccs, fetchPceSuccess, loadFullPcesTab, loadLoadedPcesTab, loadPropPcesTab, loadOtherPcesTab,
-defineMessage, apiEmptyData, purgeBc, defineError, defineErrormsg, defineMsg, cleanAllMessagesErrors, actionInProgress } from "../redux/actions";
+import { recordSelectedBc, purgePcesAccs,
+defineMessage, purgeBc, defineError, defineErrormsg, defineMsg, cleanAllMessagesErrors, actionInProgress } from "../redux/actions";
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
-
+import { BASE_URL } from "../env";
 
 const appliname = "bcweb";
 const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString();
@@ -46,14 +43,14 @@ const BcList = () => {
   const NB_ITER = 5;
   const DELAY_N_SECONDS = 2000;
 
-  const endpointCheckok = "https://back-xxx.monkey-soft.fr:54443/bcweb/checkok/";
+  const endpointCheckok = BASE_URL+"/bcweb/checkok/";
   
   React.useEffect(() => {
-    dispatch(apiCall("https://back-xxx.monkey-soft.fr:54443/bcweb/bcx/", token))
+    dispatch(apiCall(BASE_URL+"/bcweb/bcx/", token))
       .then(() => {
         let tab = [];
         tab.push(username);
-        return dispatch(apiCall("https://back-xxx.monkey-soft.fr:54443/bcweb/reprise/", token, tab));
+        return dispatch(apiCall(BASE_URL+"/bcweb/reprise/", token, tab));
       })
       .catch((error) => {
         console.error(error);
@@ -86,7 +83,7 @@ const BcList = () => {
         navigation.navigate('Bc', { tabPces });
       } 
     } catch (error) {
-      console.log("erreur dans la fonction defineBc de BcList ", error)
+      //console.log("erreur dans la fonction defineBc de BcList ", error)
       dispatch(defineErrormsg("erreur dans la fonction defineBc de BcList "+error))
       dispatch(defineMsg(""));
     } finally {
@@ -118,7 +115,7 @@ const BcList = () => {
         dispatch(defineMsg(msg));
       }
     } catch (error) {
-        console.log("erreur dans la fonction reinit de BcList ", error)
+        //console.log("erreur dans la fonction reinit de BcList ", error)
         dispatch(defineErrormsg("erreur dans la fonction reinit de BcList "+error))
         dispatch(defineMsg(""));
     } finally {
@@ -131,7 +128,7 @@ const BcList = () => {
     let fermer=false;
     try {
       fermer = await axios.post(
-      "https://back-xxx.monkey-soft.fr:54443/bcweb/fermer/",
+      BASE_URL+"/bcweb/fermer/",
       JSON.stringify(body),
       {
         headers: {
@@ -143,7 +140,7 @@ const BcList = () => {
       }
     );
     } catch {
-      console.log("erreur dans la fonction reinitialiser de BcList ", error)
+      //console.log("erreur dans la fonction reinitialiser de BcList ", error)
       dispatch(defineErrormsg("erreur dans la fonction reinitialiser de BcList "+error))
       dispatch(defineMsg(""));
     }
@@ -165,7 +162,7 @@ const BcList = () => {
     try {
       /* qd  un bl est sélectionné ds la liste déroulante, envoi cmde ouvrir pour mettre en pause pdt chargement des données */
       if (bc_num != "") {
-          dispatch(apiCall("https://back-xxx.monkey-soft.fr:54443/bcweb/ouvrir/", token, tab));
+          dispatch(apiCall(BASE_URL+"/bcweb/ouvrir/", token, tab));
           if (err !=="") {
             result = true;
           }
@@ -230,7 +227,7 @@ const BcList = () => {
       let pcesDuBc;
       if (signalToGo === true) {
         pcesDuBc = await axios.get(
-          "https://back-xxx.monkey-soft.fr:54443/bcweb/pcesdubc/"+bc_number,
+          BASE_URL+"/bcweb/pcesdubc/"+bc_number,
           {
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
@@ -281,8 +278,8 @@ const BcList = () => {
       }
 
     } catch (error) {
-      console.log('error : '+ error);
-      console.log("erreur dans la fonction checkok de BcList ", error)
+      //console.log('error : '+ error);
+      //console.log("erreur dans la fonction checkok de BcList ", error)
       dispatch(defineErrormsg("erreur dans la fonction checkok de BcList "+error))
       dispatch(defineMsg(""));
     }
@@ -322,7 +319,7 @@ const BcList = () => {
         return false;
       }
     } catch (error) {
-      console.log("erreur dans la fonction checkOK de BcList ", error)
+      //console.log("erreur dans la fonction checkOK de BcList ", error)
       dispatch(defineErrormsg("erreur dans la fonction checkOK de BcList "+error))
       dispatch(defineMsg(""));
       return false
@@ -341,7 +338,7 @@ const BcList = () => {
     let body = {"username":username};
     try {
     let result = await axios.post(
-      "https://back-xxx.monkey-soft.fr:54443/bcweb/actualiser/",
+      BASE_URL+"/bcweb/actualiser/",
       JSON.stringify(body),
       {
         headers: {
@@ -365,7 +362,7 @@ const BcList = () => {
     dispatch(defineMessage(msg));
     
     } catch (error) {
-      console.log("erreur dans la fonction actualiser de BcList ", error)
+      //console.log("erreur dans la fonction actualiser de BcList ", error)
       dispatch(defineErrormsg("erreur dans la fonction actualiser de BcList "+error))
       dispatch(defineMsg(""));
     }
@@ -378,7 +375,7 @@ const BcList = () => {
  
   const handleActuCancel = () => {
     // Handle the cancel action here
-    console.log('Cancelled');
+    //console.log('Cancelled');
     setModalActualiserVisible(false);
   };
 
@@ -440,10 +437,10 @@ const BcList = () => {
                         </Text>
                         <View style={styles.modalBtns}>
                           <Pressable style={styles.oneBtn} onPress={() => {handleConfirm(currentBC)}}>
-                            <Text style={styles.txtBtn}>Confirm</Text>
+                            <Text style={styles.txtBtn}>Confirmer</Text>
                           </Pressable>
                           <Pressable style={styles.oneBtn} onPress={handleCancel}>
-                            <Text style={styles.txtBtn}>Cancel</Text>
+                            <Text style={styles.txtBtn}>Annuler</Text>
                           </Pressable>
                         </View>
                   </View>
