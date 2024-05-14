@@ -44,7 +44,7 @@ const getFormatedDate = () => {
     "-" +
     String(dateMajBLModifie.getDate()).padStart(2, '0');
   formatedDate +=
-    "T" +
+    " " +
     String(dateMajBLModifie.getHours()).padStart(2, '0') +
     ":" +
     String(dateMajBLModifie.getMinutes()).padStart(2, '0') +

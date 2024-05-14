@@ -451,7 +451,7 @@ const BcList = () => {
         )} 
       </ScrollView>
       <View style={{flex:0.2}}>
-        <View style={{...styles.modalBtns, marginTop: 225}}>
+        <View style={{...styles.modalBtns, marginTop: 200}}>
           <Pressable style={{...styles.oneBtn}} onPress={() => {setModalActualiserVisible(true);}} >
             <Text style={{...styles.txtBtn, backgroundColor: '#00334A'}}> Actualiser</Text>
           </Pressable>

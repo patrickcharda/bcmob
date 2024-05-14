@@ -5,7 +5,7 @@ import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { defineMessage, changePceDate, changePceLoadedDate, changePcePropDate, changePceOtherDate, loadFullPcesTab, loadLoadedPcesTab,
    loadPropPcesTab, loadOtherPcesTab, loadLoadedAccs, loadPropAccs, loadAccs, changeAccDate,
-    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg } from "../redux/actions";
+    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc } from "../redux/actions";
 import {
   ScrollView,
   View,
@@ -21,6 +21,7 @@ import * as Application from "expo-application";
 import axios from "axios";
 import { AntDesign } from '@expo/vector-icons';
 import { BASE_URL } from "../env";
+//import { cloneDeep } from "lodash";
 
 const appliname = "bcweb";
 const fingerprint =
@@ -57,7 +58,7 @@ const Bc = ({ tabPces }) => {
       "-" +
       dateMajBLModifie.getDate();
     formatedDate +=
-      "T" +
+      " " +
       dateMajBLModifie.getHours() +
       ":" +
       dateMajBLModifie.getMinutes() +
@@ -82,9 +83,9 @@ const Bc = ({ tabPces }) => {
 
   let piecesLoaded = [];
   let piecesProp = [];
-  let piecesOther = [];;
+  let piecesOther = [];
 
-  /* tabPces est le tableau de tableaux des différentes catégories de pièces (loaded, prop, other); ce tableau est en RAM;
+  /* tabPces est le tableau de tableaux des différentes catégories de pièces (loaded, prop, other); "ce tableau est en RAM";
   il va servir à afficher les pièces immédiatement (donc le BC), avant que les pièces soient stockées dans le state, en ROM donc */
   if (pces.length === 0 && tabPces != undefined && Array.isArray(tabPces) && tabPces.length > 0) { // au 1er chargement du Bc, lorsqu'il n'est pas déjà ds le state
     piecesLoaded = tabPces[0];
@@ -95,6 +96,7 @@ const Bc = ({ tabPces }) => {
     piecesProp = pcesProp;
     piecesOther = pcesOther;
   }
+
 
   /*  pour optimiser l'affichage le calcul du poids et du nombre de pièces chargées sera fait une fois les listes affichées, le state étant alors seulement mis à jour à ce moment là;
   ce calcul se base sur le state et non les listes en RAM */
@@ -201,11 +203,26 @@ const Bc = ({ tabPces }) => {
       dispatch(defineMsg("enregistrement en cours"));
 
       pces.map(pce => dispatch(changePceDate(pce)));
-      //console.log("PIECES CHARGEES "+pcesLoaded);
       pcesLoaded.map(pce => dispatch(changePceLoadedDate(pce)));
       pcesProp.map(pce => dispatch(changePcePropDate(pce)));
       pcesOther.map(pce => dispatch(changePceOtherDate(pce)));
       
+      /* let newPces, newPcesLoaded, newPcesProp, newPcesOther;
+
+      newPces = cloneDeep(pces);
+      newPcesLoaded = cloneDeep(pcesLoaded);
+      newPcesProp = cloneDeep(pcesProp);
+      newPcesOther = cloneDeep(pcesOther);
+
+      newPces.map(pce => pce.pce_date_web = recordDate);
+      newPcesLoaded.map(pce => pce.pce_date_web = recordDate);
+      newPcesProp.map(pce => pce.pce_date_web = recordDate);
+      newPcesOther.map(pce => pce.pce_date_web = recordDate);
+
+      dispatch(loadFullPcesTab(newPces));
+      dispatch(loadLoadedPcesTab(newPcesLoaded));
+      dispatch(loadPropPcesTab(newPcesProp));
+      dispatch(loadOtherPcesTab(newPcesProp)); */
 
       // Tronçonner le tableau des pièces en tableaux de 500 pièces
       let sliced_tabs = []; // tableau de tableaux tronçons de 500 pièces
@@ -225,8 +242,10 @@ const Bc = ({ tabPces }) => {
           result = patchAcc(access);
         }
       }
-      //màj les observations du BC
+
+      //màj a) la date pr le state du BC b) les observations du BC au niveau de PostgreSQL
       let recordDate = getFormatedDate();
+      
       let reqBody = {
         "bc_observ": bonChargement.bc_observ,
         "bc_date_web": recordDate,
@@ -244,6 +263,9 @@ const Bc = ({ tabPces }) => {
           },
         }
       );
+      //recordDate = recordDate.slice(0, -6);
+      const updatedBonChargement = { ...bonChargement, bc_date_web: recordDate };
+      dispatch(recordSelectedBc(updatedBonChargement));
     } catch (error) {
       //console.log("erreur dans la fonction recordBc du Bc ", error)
       dispatch(defineErrormsg("erreur dans la fonction recordBc du Bc "+error))
@@ -273,6 +295,7 @@ const Bc = ({ tabPces }) => {
     } finally {
       setIsActionBeingExecuted(false);
       dispatch(actionInProgress(false));
+      dispatch(purgeBc());
     }
     navigation.goBack();
     return result;

@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   Modal,
-  Button,
   TextInput,
   ScrollView,
   Pressable,
@@ -73,17 +72,24 @@ const BcHeader = ({ currentBc }) => {
                 >
                   <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                      <ScrollView>
                         <TextInput
-                          style={{ height: 120, borderColor: 'gray', borderWidth: 1, textAlignVertical: 'top', textAlign: 'left' }}
+                          style={{...styles.textModalView, borderColor: 'gray', borderWidth: 1, textAlignVertical: 'top', textAlign: 'left', marginBottom:10 }}
                           onChangeText={setText}
                           value={text}
                           placeholder='Saisissez le texte ici'
                           multiline
+                          maxLength={600}
                         />
-                        <Button title="Confirm" onPress={() => {handleConfirm(bc)}} />
-                        <Button title="Cancel" onPress={() => handleCancel()} />
-                      </ScrollView>
+                        <View style={styles.modalBtns}>
+                        {/* <Button title="Confirmer" onPress={() => {handleConfirm(bc)}} />
+                        <Button title="Annuler" onPress={() => handleCancel()} /> */}
+                          <Pressable style={styles.oneBtn} onPress={() => {handleConfirm(bc)}}>
+                            <Text style={styles.txtBtn}>Confirmer</Text>
+                          </Pressable>
+                          <Pressable style={styles.oneBtn} onPress={() => handleCancel()}>
+                            <Text style={styles.txtBtn}>Annuler</Text>
+                          </Pressable>
+                      </View>
                     </View>
                   </View>
               </Modal>
@@ -99,7 +105,7 @@ const BcHeader = ({ currentBc }) => {
               </Pressable>
           </View>
           <ScrollView>
-            <View style={{flexDirection: 'row', backgroundColor: '#82CFD8'}}><Text style={{...styles.textHeader, color: 'black'}}>Date Heure mise à jour : </Text><Text style={styles.textContent}>{hasNullValue(bc.bc_date_web)?"" : strToDate(bc.bc_date_web)}</Text></View>
+            <View style={{flexDirection: 'row', backgroundColor: '#82CFD8'}}><Text style={{...styles.textHeader, color: 'black'}}>Mis à jour le : </Text><Text style={styles.textContent}>{hasNullValue(bc.bc_date_web)?"" : strToDate(bc.bc_date_web)}</Text></View>
             <View style={{flexDirection: 'row'}}><Text style={styles.textHeader}>N° Aff : </Text><Text style={styles.textContent}>{hasNullValue(bc.bc_num_affaire)?"" : bc.bc_num_affaire}</Text></View>
             <View style={{flexDirection: 'row'}}><Text style={styles.textHeader}>Client : </Text><Text style={styles.textContent}>{hasNullValue(bc.bc_client)?"" : bc.bc_client}</Text></View>
             <View style={{flexDirection: 'row'}}><Text style={styles.textHeader}>Chantier : </Text><Text style={styles.textContent}>{hasNullValue(bc.bc_chantier)?"" : bc.bc_chantier}</Text></View>
@@ -124,7 +130,7 @@ const styles = StyleSheet.create({
     color: "#bdc3c7",
   },
   textHeader: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     paddingLeft: 3,
   },
@@ -163,17 +169,15 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 22,
+    justifyContent: 'center',
+    alignItems: 'stetch',
   },
   modalView: {
-    maxHeight: 300,
-    margin: 20,
+    margin: 10,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
+    padding: 15,
+    alignItems: 'stretch',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -182,6 +186,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  titleModalView: {
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  textModalView: {
+    fontSize: 20,
+  },
+  modalBtns: {
+    flexDirection: 'row',
+    justifyContent: 'stretch',
+  },
+  oneBtn: {
+    flex: 0.5,
+    margin :2,
+    padding : 20
+  },
+  txtBtn: {
+    fontSize: 20,
+    padding: 5,
+    backgroundColor: '#007FA9',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
