@@ -48,7 +48,7 @@ const Bc = ({ tabPces }) => {
   const bonChargement = useSelector((state) => state.bcReducer.bc);
   const [isActionBeingExecuted, setIsActionBeingExecuted] = React.useState(false);
 
-  const getFormatedDate = () => {
+  /* const getFormatedDate = () => {
     let dateMajBLModifie = new Date();
     //formater la date pr la persister
     let formatedDate =
@@ -64,6 +64,24 @@ const Bc = ({ tabPces }) => {
       dateMajBLModifie.getMinutes() +
       ":" +
       dateMajBLModifie.getSeconds();
+    return formatedDate;
+  } */
+
+  const getFormatedDate = () => {
+    let dateMajBLModifie = new Date();
+    let formatedDate =
+      dateMajBLModifie.getFullYear() +
+      "-" +
+      String(dateMajBLModifie.getMonth() + 1).padStart(2, '0') +
+      "-" +
+      String(dateMajBLModifie.getDate()).padStart(2, '0');
+    formatedDate +=
+      " " +
+      String(dateMajBLModifie.getHours()).padStart(2, '0') +
+      ":" +
+      String(dateMajBLModifie.getMinutes()).padStart(2, '0') +
+      ":" +
+      String(dateMajBLModifie.getSeconds()).padStart(2, '0');
     return formatedDate;
   }
 
@@ -233,20 +251,38 @@ const Bc = ({ tabPces }) => {
 
       //màj les pces ds la bdd, tronçon de 500 par tronçon de 500
       for (let j = 0; j < sliced_tabs.length; j++) {
-        result = patchBlocPces(sliced_tabs[j]);
+        result = await patchBlocPces(sliced_tabs[j]);
       }
       //màj les accessoires s'il y en a
       if (accs.length > 0) {
         accs.map(access => dispatch(changeAccDate(access)));
         for (let access of accs) {
-          result = patchAcc(access);
+          result = await patchAcc(access);
         }
       }
 
+      // Forcer màj date pce_date_web des pces du bc
+      let reqBody = {
+        "bc_num": bonChargement.bc_num,
+        "username": username,
+      }
+      result = await axios.post(
+        BASE_URL+"/bcweb/bc/updatedatepces/",
+        JSON.stringify(reqBody),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer "+token,
+            appliname: appliname,
+            fingerprint: fingerprint,
+          },
+        }
+      );
+
       //màj a) la date pr le state du BC b) les observations du BC au niveau de PostgreSQL
       let recordDate = getFormatedDate();
-      
-      let reqBody = {
+      console.log("LA DATE "+recordDate);
+      reqBody = {
         "bc_observ": bonChargement.bc_observ,
         "bc_date_web": recordDate,
         "bc_webuser": username,
@@ -283,7 +319,8 @@ const Bc = ({ tabPces }) => {
       dispatch(defineMsg("Validation en cours..."));
       setIsActionBeingExecuted(true);
       dispatch(actionInProgress(true));
-      result = await recordBc();
+      // result = await recordBc();
+      await recordBc();
       setIsActionBeingExecuted(true);
       dispatch(actionInProgress(true));
       result = await valider();
