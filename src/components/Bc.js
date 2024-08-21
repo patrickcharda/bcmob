@@ -17,25 +17,40 @@ import {
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import * as Device from "expo-device";
-import * as Application from "expo-application";
+import * as Application from 'expo-application';
+import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import { AntDesign } from '@expo/vector-icons';
-import { BASE_URL } from "../env";
-//import { cloneDeep } from "lodash";
+//import { BASE_URL } from "../env";
+
 
 const appliname = "bcweb";
-const fingerprint =
-  Application.getAndroidId().toString() +
-  Application.nativeBuildVersion +
-  Device.deviceYearClass.toString();
 
+const getFingerprint = async () => {
+  let fp = await AsyncStorage.getItem('fp');
+  if (!fp) {
+    fp = uuid.v4();
+    await AsyncStorage.setItem('fp', fp);
+  }
+  fp += Application.nativeBuildVersion + Device.deviceYearClass.toString();
+  return fp;
+};
+var fingerprint;
+getFingerprint().then(result => {
+  fingerprint = result;
+});
+console.log("UUID : "+fingerprint);
 const NB_ITER = 5;
-const DELAY_N_SECONDS = 2000;
-const endpointCheckok = BASE_URL+"/bcweb/checkok/";
+const DELAY_N_SECONDS = 3000;
+
 
 const Bc = ({ tabPces }) => {
+  
   const token = useSelector((state) => state.tokenReducer.token);
   const username = useSelector((state) => state.tokenReducer.username);
+  const BASE_URL = useSelector((state) => state.configReducer.url);
+  const endpointCheckok = BASE_URL+"/bcweb/checkok/";
   const dispatch = useDispatch();
   const [isOpened, setIsOpened] = React.useState(false); //booleen pr affichage/masquage entête BC
   const [isLoadListOpen, setIsLoadListOpen] = React.useState(false);
@@ -47,25 +62,9 @@ const Bc = ({ tabPces }) => {
   const navigation = useNavigation();
   const bonChargement = useSelector((state) => state.bcReducer.bc);
   const [isActionBeingExecuted, setIsActionBeingExecuted] = React.useState(false);
-
-  /* const getFormatedDate = () => {
-    let dateMajBLModifie = new Date();
-    //formater la date pr la persister
-    let formatedDate =
-      dateMajBLModifie.getFullYear() +
-      "-" +
-      (dateMajBLModifie.getMonth() + 1) +
-      "-" +
-      dateMajBLModifie.getDate();
-    formatedDate +=
-      " " +
-      dateMajBLModifie.getHours() +
-      ":" +
-      dateMajBLModifie.getMinutes() +
-      ":" +
-      dateMajBLModifie.getSeconds();
-    return formatedDate;
-  } */
+  const [buttonColor1, setButtonColor1] = React.useState('#00334A');
+  const [buttonColor2, setButtonColor2] = React.useState('#00334A');
+  const [buttonColor3, setButtonColor3] = React.useState('#00334A');
 
   const getFormatedDate = () => {
     let dateMajBLModifie = new Date();
@@ -242,22 +241,22 @@ const Bc = ({ tabPces }) => {
       dispatch(loadPropPcesTab(newPcesProp));
       dispatch(loadOtherPcesTab(newPcesProp)); */
 
-      // Tronçonner le tableau des pièces en tableaux de 500 pièces
-      let sliced_tabs = []; // tableau de tableaux tronçons de 500 pièces
-      for (let i = 0; i < pces.length; i += 500) {
-        let chunk = pces.slice(i, i + 500);
+      // Tronçonner le tableau des pièces en tableaux de 250 pièces
+      let sliced_tabs = []; // tableau de tableaux tronçons de 250 pièces
+      for (let i = 0; i < pces.length; i += 250) {
+        let chunk = pces.slice(i, i + 250);
         sliced_tabs.push(chunk);
       }
 
-      //màj les pces ds la bdd, tronçon de 500 par tronçon de 500
+      //màj les pces ds la bdd, tronçon de n par tronçon de n
       for (let j = 0; j < sliced_tabs.length; j++) {
-        result = await patchBlocPces(sliced_tabs[j]);
+        await patchBlocPces(sliced_tabs[j]);
       }
       //màj les accessoires s'il y en a
       if (accs.length > 0) {
         accs.map(access => dispatch(changeAccDate(access)));
         for (let access of accs) {
-          result = await patchAcc(access);
+          await patchAcc(access);
         }
       }
 
@@ -266,7 +265,7 @@ const Bc = ({ tabPces }) => {
         "bc_num": bonChargement.bc_num,
         "username": username,
       }
-      result = await axios.post(
+      await axios.post(
         BASE_URL+"/bcweb/bc/updatedatepces/",
         JSON.stringify(reqBody),
         {
@@ -282,14 +281,14 @@ const Bc = ({ tabPces }) => {
       //màj a) la date pr le state du BC b) les observations du BC au niveau de PostgreSQL
       let recordDate = getFormatedDate();
       console.log("LA DATE "+recordDate);
-      reqBody = {
+      let reqBody2 = {
         "bc_observ": bonChargement.bc_observ,
         "bc_date_web": recordDate,
         "bc_webuser": username,
       }
-      result = await axios.patch(
+      await axios.patch(
         BASE_URL+"/bcweb/bc/"+bonChargement.bc_num,
-        JSON.stringify(reqBody),
+        JSON.stringify(reqBody2),
         {
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
@@ -314,17 +313,20 @@ const Bc = ({ tabPces }) => {
   };
 
   const valideBc = async() => {
-    let result;
-    try {
+    //let result;
+    try { 
       dispatch(defineMsg("Validation en cours..."));
       setIsActionBeingExecuted(true);
       dispatch(actionInProgress(true));
-      // result = await recordBc();
       await recordBc();
+      //await recordBc();
       setIsActionBeingExecuted(true);
       dispatch(actionInProgress(true));
-      result = await valider();
-      result = await checkOK();
+
+      await valider();
+      await checkOK();
+      await reprise();
+
     } catch (error) {
       //console.log("erreur dans la fonction valideBc du Bc ", error);
       dispatch(defineErrormsg("erreur dans la fonction valideBc du Bc "+error));
@@ -333,9 +335,64 @@ const Bc = ({ tabPces }) => {
       setIsActionBeingExecuted(false);
       dispatch(actionInProgress(false));
       dispatch(purgeBc());
+      navigation.goBack();
     }
-    navigation.goBack();
-    return result;
+    
+    //return result;
+  }
+
+  const livreBc = async() => {
+    //let result;
+    try {
+      dispatch(defineMsg("Livrable en cours..."));
+      setIsActionBeingExecuted(true);
+      dispatch(actionInProgress(true));
+      await recordBc();
+      //await recordBc();
+      setIsActionBeingExecuted(true);
+      dispatch(actionInProgress(true));
+
+      await livrer();
+      await checkOK();
+      await reprise();
+
+    } catch (error) {
+      //console.log("erreur dans la fonction valideBc du Bc ", error);
+      dispatch(defineErrormsg("erreur dans la fonction livreBc du Bc "+error));
+      dispatch(defineMsg(""));
+    } finally {
+      setIsActionBeingExecuted(false);
+      dispatch(actionInProgress(false));
+      dispatch(purgeBc());
+      navigation.goBack();
+    }
+    
+  }
+  
+  const reprise = async() => {
+    let result;
+    try {
+      let endpointReprise = BASE_URL+"/bcweb/reprise/"
+      result = await axios.post(
+        endpointReprise,
+        JSON.stringify({
+          "username": username,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer "+token,
+            appliname: appliname,
+            fingerprint: fingerprint,
+          },
+        }
+      );
+    } catch (error) {
+      //console.log("erreur dans la fonction valider du Bc ", error)
+      dispatch(defineErrormsg("erreur dans la fonction reprise "+error));
+    } finally {
+      return result
+    }
   }
 
   const valider = async() => {
@@ -360,6 +417,33 @@ const Bc = ({ tabPces }) => {
     } catch (error) {
       //console.log("erreur dans la fonction valider du Bc ", error)
       dispatch(defineErrormsg("erreur dans la fonction valider du Bc "+error));
+    } finally {
+      return result
+    }
+  }
+
+  const livrer = async() => {
+    let result;
+    try {
+      let endpointLivrer = BASE_URL+"/bcweb/livrable/"
+      result = await axios.post(
+        endpointLivrer,
+        JSON.stringify({
+          "username": username,
+          "bc_num": bonChargement.bc_num,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer "+token,
+            appliname: appliname,
+            fingerprint: fingerprint,
+          },
+        }
+      );
+    } catch (error) {
+      //console.log("erreur dans la fonction valider du Bc ", error)
+      dispatch(defineErrormsg("erreur dans la fonction Livrer du Bc "+error));
     } finally {
       return result
     }
@@ -454,9 +538,11 @@ const Bc = ({ tabPces }) => {
         signalToGo = await checkOK();
       }
       if (signalToGo) {
+        await reprise();
         msg = "La réinitialisation s'est bien déroulée";
         dispatch(defineMessage(msg));
       } else {
+        await reprise();
         msg = "La réinitialisation ne s'est pas bien déroulée, merci de réessayer ultérieurement";
         dispatch(defineMessage(msg));
       }
@@ -494,12 +580,17 @@ const Bc = ({ tabPces }) => {
     }
   }
 
-  const checkOK = async () => {
+  /* const checkOK = async () => {
     try {
       let i = 0;
       let signalToGo = false;
       let response ="";
-      while ((i < NB_ITER) && (signalToGo==false)) {
+      console.error("FINGERPRINT "+fingerprint);
+      console.error("NB_ITER "+NB_ITER);
+      console.error("signalToGo "+signalToGo);
+      console.error("username "+username);
+      console.error("DELAY_N_SECONDS "+DELAY_N_SECONDS);
+      while (i < NB_ITER && !signalToGo) {
         await new Promise(resolve => setTimeout(resolve,DELAY_N_SECONDS));
           response = await axios.post(
           endpointCheckok,
@@ -515,6 +606,7 @@ const Bc = ({ tabPces }) => {
               },
             }
           );
+          console.error("Response: ", response.data);
         
         if (response.data.message === "> ok") {
           signalToGo = true;
@@ -523,13 +615,55 @@ const Bc = ({ tabPces }) => {
       }
       if (signalToGo === true) {
         return true;
-      } else {
-        return false;
-      }
+      } 
     } catch (error) {
-      //console.log('error fct checkOK ds Bc : '+ error);
-      dispatch(defineErrormsg("Erreur fct checkOK du BC "+error));
+      console.error('error fct checkOK ds Bc : ', error);
+      dispatch(defineErrormsg(`Erreur fct checkOK du BC ${error}`));
       return false
+    }
+  }; */
+
+  const checkOK = async () => {
+    try {
+      let i = 0;
+      let signalToGo = false;
+      let response = "";
+  
+      /* console.error("FINGERPRINT: " + fingerprint);
+      console.error("NB_ITER: " + NB_ITER);
+      console.error("signalToGo: " + signalToGo);
+      console.error("username: " + username);
+      console.error("DELAY_N_SECONDS: " + DELAY_N_SECONDS);
+      console.error("appliname: " + appliname); */
+  
+      while (i < NB_ITER && !signalToGo) {
+        await new Promise(resolve => setTimeout(resolve, DELAY_N_SECONDS)); // Assuming DELAY_N_SECONDS is in seconds
+        response = await axios.post(
+          endpointCheckok,
+          JSON.stringify({ username }),
+          {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+              "Authorization": `Bearer ${token}`,
+              "appliname": appliname,
+              "fingerprint": fingerprint,
+            }
+          }
+        );
+  
+        //console.error("Response: ", response.data);
+  
+        if (response.data.message === "> ok") {
+          signalToGo = true;
+        }
+        i++;
+      }
+  
+      return signalToGo;
+    } catch (error) {
+      console.error('Error in checkOK function:', error);
+      dispatch(defineErrormsg(`Erreur fct checkOK du BC ${error}`));
+      return false;
     }
   };
 
@@ -630,22 +764,30 @@ const Bc = ({ tabPces }) => {
         <View style={styles.container2_1}>
           {/* espace pr btns enregistrer valier et réinitialiser */}
           {/* <View style={{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'yellow', alignItems: 'stretch', flex: 1}}> */}
-            <View style={{flex: 3, margin: 2}}>
+
+            {/*<View style={{flex: 3, margin: 2}}>
               <Pressable style={{backgroundColor: '#00334A', padding: 4}} onPress={() => recordBc()} disabled={isActionBeingExecuted}>
-                <Text style={{ color: 'white', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Enregistrer </Text>
+                <Text style={{ color: 'white', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Enregistrer pg</Text>
               </Pressable>
-            </View>
+            </View>*/}
+
             {/* <Text>{"\n"}</Text> */}
             {/* <Button onPress={() => valideBc()} title="Valider"></Button> */}
             <View style={{flex: 3, margin: 2}}>
-              <Pressable style={{backgroundColor: '#00334A', padding: 4}}  onPress={() => valideBc()} disabled={isActionBeingExecuted}>
-              <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Valider</Text>
+              <Pressable style={{backgroundColor: buttonColor1, padding: 4}}  onPress={() => valideBc()} onPressIn={() => setButtonColor1('#007FA9')} onPressOut={() => setButtonColor1('#00334A')} disabled={isActionBeingExecuted}>
+              <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Enregistrer</Text>
+              </Pressable>
+              {/* <Text>{"\n"}</Text> */}
+            </View>
+            <View style={{flex: 3, margin: 2}}>
+              <Pressable style={{backgroundColor: buttonColor2, padding: 4}}  onPress={() => livreBc()} onPressIn={() => setButtonColor2('#005577')} onPressOut={() => setButtonColor2('#00334A')} disabled={isActionBeingExecuted}>
+              <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Livrable</Text>
               </Pressable>
               {/* <Text>{"\n"}</Text> */}
             </View>
             {/* <Button title="Réinitialiser" onPress={() => {setModalReinitVisible(true);}} /> */}
             <View style={{flex: 3, margin :2}}>
-              <Pressable style={{backgroundColor: '#00334A', padding: 4}}  onPress={() => {setModalReinitVisible(true);}} disabled={isActionBeingExecuted}>
+              <Pressable style={{backgroundColor: buttonColor3, padding: 4}}  onPress={() => {setModalReinitVisible(true);}} onPressIn={() => setButtonColor3('#005577')} onPressOut={() => setButtonColor3('#00334A')} disabled={isActionBeingExecuted}>
                 <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Réinitialiser</Text>
               </Pressable>
               { modalReinitVisible &&

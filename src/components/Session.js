@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import * as React from "react";
 import axios from 'axios';
 
-const Session = ({ username, appLogin, endpointLogout, appliname }) => {
+const Session = ({ username, password, appLogin, endpointLogout, appliname }) => {
 
   var logged = useSelector((state) => state.tokenReducer.isLogged);
   console.log("first logged "+logged);
@@ -60,7 +60,7 @@ Vous pouvez au choix : \n
           <Pressable style={styles.oneBtn} onPress={() => {continuer();}} >
             <Text style={styles.txtBtn}>Continuer</Text>
           </Pressable>
-          <Pressable style={styles.oneBtn} onPress={() => {continuer();}} >
+          <Pressable style={styles.oneBtn} >
             <Text style={styles.txtBtn} onPress={() => BackHandler.exitApp()}>Quitter</Text>
           </Pressable>
       </View>

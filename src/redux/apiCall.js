@@ -2,10 +2,27 @@ import axios from "axios";
 import { fetchData, fetchSuccess, fetchError, signout, fetchPceSuccess, fetchAccSuccess, fetchDataPcesAccs } from "./actions";
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
+import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const appliname = "bcweb";
-const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString();
+/* const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString(); */
 
+const getFingerprint = async () => {
+  let fp = await AsyncStorage.getItem('fp');
+  if (!fp) {
+    fp = uuid.v4();
+    await AsyncStorage.setItem('fp', fp);
+  }
+  fp += Application.nativeBuildVersion + Device.deviceYearClass.toString();
+  return fp;
+};
+var fingerprint;
+getFingerprint().then(result => {
+  fingerprint = result;
+});
+console.log("UUID : "+fingerprint);
+ 
 const apiCall = (url, token, tableau = []) => (dispatch) => {
   //console.log("FINGERPRINT "+fingerprint);
   const config = {

@@ -1,16 +1,17 @@
 import { Pressable, Image,} from 'react-native';
-import { signout, purgePcesAccs, purgeBc, apiEmptyData } from "../redux/actions";
+import { signout, purgePcesAccs, purgeBc, apiEmptyData, setBackurl } from "../redux/actions";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";  
 import apiCall from "../redux/apiCall";
 /* import TooltipMenu from 'react-native-tooltip-menu'; */
-import { BASE_URL } from '../env';
+//import { BASE_URL } from '../env';
 
 
 
 const LogoutButton = () => {
   const dispatch = useDispatch();
   const username = useSelector((state) => state.tokenReducer.username);
+  const BASE_URL = useSelector((state) => state.configReducer.url);
   let tab = [];
   tab.push(username);
   let url = BASE_URL+"/apps/userapplogout/";

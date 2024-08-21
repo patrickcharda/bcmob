@@ -8,18 +8,25 @@ import LoginScreen from "./screens/LoginScreen";
 import BcListScreen from "./screens/BcListScreen";
 import BcScreen from "./screens/BcScreen";
 import ShootSessionScreen from "./screens/ShootSessionScreen";
-import { toggleScanView } from "../redux/actions";
+import ConfigScreen from "./screens/ConfigScreen";
+import { toggleScanView, setBackurl, setUrl } from "../redux/actions";
 import { useSelector, useDispatch } from "react-redux";  
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
+
 
 const Stack = createNativeStackNavigator();
 
+
 const Main = () => {
-  const logged = useSelector((state) => state.tokenReducer.isLogged);
-  const scanView = useSelector((state) => state.tokenReducer.scanView);
+
   const dispatch = useDispatch();
   
+  const logged = useSelector((state) => state.tokenReducer.isLogged);
+  const scanView = useSelector((state) => state.tokenReducer.scanView);
+  const setbackurl = useSelector((state) => state.configReducer.backurl);
+
   return (
 
     <Stack.Navigator screenOptions={{
@@ -60,10 +67,23 @@ const Main = () => {
       key="2"
     /> 
       ]
-       : [
+       : ( !setbackurl ? [
       <Stack.Screen
         name="Login"
         component={LoginScreen}
+        options={({}) => ({
+          headerTintColor: '#fff',
+          headerTitle: () => (
+            <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: 0}}>
+              <View>
+                <Pressable onPress={() => {dispatch(setBackurl());}}>
+                  <Octicons name="gear" size={24} color="gray" />
+                </Pressable>
+              </View>
+            </View>
+          ),
+          })
+        }
         key="3"
       />,<Stack.Screen
         name="ShootSession"
@@ -78,9 +98,30 @@ const Main = () => {
         }}
         key="4"
       />
-      ]}
+    ] : [
+      <Stack.Screen
+        name="Config"
+        component={ConfigScreen}
+        options={({}) => ({
+          title: "Configuration",
+          headerTintColor: '#fff',
+          headerTitle: () => (
+            <View  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: 0}}>
+              <View>
+                <Pressable onPress={() => {dispatch(setBackurl());}}>
+                  <Octicons name="gear" size={24} color="gray" />
+                </Pressable>
+              </View>
+            </View>
+          ),
+          })
+        }
+        key="5"
+      />
+    ]
+    )}
     </Stack.Navigator>
   );
-};
+  };
 
 export default Main;

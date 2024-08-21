@@ -48,28 +48,32 @@ export const CHANGE_ACC_OBSERV_BC = "CHANGE_ACC_OBSERV_BC";
 export const CHANGE_LOAD_ACC = "CHANGE_LOAD_ACC";
 export const SEARCH_PCE_ID = "SEARCH_PCE_ID";
 
-//action creators for API to get pces and accs
+//action's type to set application
+export const SET_BACKURL = "SET_BACKURL";
+export const SET_URL = "SET_URL";
+
+//action creators for API to get pces and accs...
 
 export const searchPceId = (pce_num) => {
   return {
     type: SEARCH_PCE_ID,
     payload: pce_num,
-  }
-}
+  };
+};
 
 export const changeLoadAcc = (id) => {
   return { 
     type: CHANGE_LOAD_ACC,
     payload: id,
-  }
-}
+  };
+};
 
 export const changeAccQte = (obj) => {
   return {
     type: CHANGE_ACC_QTE,
     payload: obj,
-  }
-}
+  };
+};
 export const changePceObservBc = (data) => {
   return {
     type: CHANGE_PCE_OBSERV_BC,
@@ -130,55 +134,55 @@ export const loadFullPcesTab = (tabPces) => {
   return {
     type: LOAD_FULL_PCES_TAB,
     payload: tabPces,
-  }
-} 
+  };
+}; 
 export const loadLoadedPcesTab = (tabPcesLoaded) => {
   return {
     type: LOAD_LOADED_PCES_TAB,
     payload: tabPcesLoaded,
-  }
-} 
+  };
+};
 export const loadPropPcesTab = (tabPcesProp) => {
   return {
     type: LOAD_PROP_PCES_TAB,
     payload: tabPcesProp,
-  }
-} 
+  };
+};
 export const loadOtherPcesTab = (tabPcesOther) => {
   return {
     type: LOAD_OTHER_PCES_TAB,
     payload: tabPcesOther,
-  }
-}
+  };
+};
 export const fetchAccSuccess = (acc) => {
   return {
     type: FETCH_ACC_SUCCESS,
     payload: acc,
-  }
-}
+  };
+};
 export const purgePcesAccs = () => {
   return {
     type: PURGE_PCES_ACCS,
-  }
-}
+  };
+};
 export const loadLoadedAccs = (accsTab) => {
   return {
     type: LOAD_LOADED_ACCS,
     payload: accsTab,
-  }
-}
+  };
+};
 export const loadPropAccs = (accsTab) => {
   return {
     type: LOAD_PROP_ACCS,
     payload: accsTab,
-  }
-}
+  };
+};
 export const loadAccs = (accsTabs) => {
   return {
     type: LOAD_ACCS,
     payload: accsTabs,
-  }
-}
+  };
+};
 //action creators for bc
 export const recordSelectedBc = (bc) => {
   return {
@@ -189,8 +193,8 @@ export const recordSelectedBc = (bc) => {
 export const purgeBc = () => {
   return {
     type: PURGE_BC,
-  }
-}
+  };
+};
 
 //action creators for login
 export const addToken = (token) => {
@@ -211,8 +215,8 @@ export const addUser = (username) => {
   return {
     type: ADD_USER,
     payload: username,
-  }
-}
+  };
+};
 
 export const toggleIsLogged = (isLogged) => {
   return {
@@ -239,8 +243,8 @@ export const actionInProgress = (true_or_false) => {
   return {
     type: SET_ACTION_IN_PROGRESS,
     payload: true_or_false
-  }
-}
+  };
+};
 
 // action creators for API
 
@@ -291,3 +295,17 @@ export const defineErrormsg = (error) => ({
 export const cleanAllMessagesErrors = () => ({
   type: CLEAN_ALL_MESSAGES_ERRORS,
 })
+
+//action creators to setup application
+export const setBackurl = () => {
+  return {
+    type: SET_BACKURL,
+  };
+};
+
+export const setUrl = (anurl) => {
+  return {
+    type: SET_URL,
+    payload: anurl,
+  };
+};

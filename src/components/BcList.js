@@ -16,10 +16,29 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
-import { BASE_URL } from "../env";
+import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//import { BASE_URL } from "../env";
+
 
 const appliname = "bcweb";
-const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString();
+/* const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString(); */
+const getFingerprint = async () => {
+  let fp = await AsyncStorage.getItem('fp');
+  if (!fp) {
+    fp = uuid.v4();
+    await AsyncStorage.setItem('fp', fp);
+  }
+  fp += Application.nativeBuildVersion + Device.deviceYearClass.toString();
+  return fp;
+};
+var fingerprint;
+getFingerprint().then(result => {
+  fingerprint = result;
+});
+
+//console.log("UUID : "+fingerprint);
+
 const DELAY_N_SECONDS = 2000;
 const NB_ITER = 5;
 
@@ -32,13 +51,16 @@ const BcList = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalActualiserVisible, setModalActualiserVisible] = React.useState(false);
   const [currentBC, setCurrentBC] = React.useState(null);
-
+  
   const loading = useSelector((state) => state.apiReducer.loading);
   const token = useSelector((state) => state.tokenReducer.token);
   const username = useSelector((state) => state.tokenReducer.username);
   const lastEditedBc = useSelector((state) => state.bcReducer.bc);
   const err = useSelector((state) => state.apiReducer.error);
+  const BASE_URL = useSelector((state) => state.configReducer.url);
   const [isActionBeingPerformed, setIsActionBeingPerformed] = React.useState(false);
+
+  const [buttonColor, setButtonColor] = React.useState(['#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED','#CEDDED']);
 
   const NB_ITER = 5;
   const DELAY_N_SECONDS = 2000;
@@ -64,7 +86,46 @@ const BcList = () => {
   
   let bc;
 
+  const handleClickIn = (index) => {
+    setButtonColor(prevState => [
+        ...prevState.slice(0, index), // Keep elements before the one you want to change
+        '#6DA557',                        // Update the specific element
+        ...prevState.slice(index + 1) // Keep elements after the one you want to change
+    ]);
+  };
+  const handleClickOut = (index) => {
+    setButtonColor(prevState => [
+        ...prevState.slice(0, index), // Keep elements before the one you want to change
+        '#CEDDED',                        // Update the specific element
+        ...prevState.slice(index + 1) // Keep elements after the one you want to change
+    ]);
+  };
 
+  const reprise = async() => {
+    let result;
+    try {
+      let endpointReprise = BASE_URL+"/bcweb/reprise/"
+      result = await axios.post(
+        endpointReprise,
+        JSON.stringify({
+          "username": username,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer "+token,
+            appliname: appliname,
+            fingerprint: fingerprint,
+          },
+        }
+      );
+    } catch (error) {
+      //console.log("erreur dans la fonction valider du Bc ", error)
+      dispatch(defineErrormsg("erreur dans la fonction reprise "+error));
+    } finally {
+      return result
+    }
+  }
 
   const defineBc = async (selectedBc) => {
     try {
@@ -107,6 +168,7 @@ const BcList = () => {
         signalToGo = await checkOK();
       }
       if (signalToGo) {
+        await reprise();
         msg = "La réinitialisation s'est bien déroulée";
         dispatch(defineMsg(msg));
         setRefresh(refresh + 1);
@@ -356,6 +418,8 @@ const BcList = () => {
     let msg;
     if (acquittement) {
       msg = "L'actualisation des BC s'est bien déroulée"
+      await reprise();
+
     } else {
       msg = "L'actualisation des BC ne s'est pas déroulée normalement. Veuillez réessayer ultérieurement"
     }
@@ -395,12 +459,30 @@ const BcList = () => {
             </Pressable>
             {isOpen &&
               data.map((bc, index) => (
-                <View style={{backgroundColor: '#CEDDDE'}}>
-                <Pressable  style={{padding: 5}} onPress={isActionBeingPerformed ? null : () => defineBc(bc)} key={index} disabled={isActionBeingPerformed}>
-                  <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length}</Text>
+                <View style={{backgroundColor: '#CEDDED'}} key={index}>
+                <Pressable  style={{padding: 5, backgroundColor: buttonColor[index]}} onPress={isActionBeingPerformed ? null : () => defineBc(bc)} onPressIn={() => handleClickIn(index)} onPressOut={() => handleClickOut(index)} disabled={isActionBeingPerformed}>
+                  <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length} </Text>
                 </Pressable>
                 </View>
               ))}
+              {/* {isOpen &&
+              data.map((bc, index) => {
+                const [buttonColor, setButtonColor] = React.useState('#CEDDED');
+                  <View style={{backgroundColor: '#CEDDDE'}} key={index}>
+                    <Pressable
+                      style={{padding: 5, backgroundColor: buttonColor}}
+                      onPress={isActionBeingPerformed ? null : () => defineBc(bc)}
+                      onPressIn={() => setButtonColor('#60A545')}
+                      onPressOut={() => setButtonColor('#CEDDED')}
+                      disabled={isActionBeingPerformed}
+                    >
+                      <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>
+                        {bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length}
+                      </Text>
+                    </Pressable>
+                  </View>
+              })
+            } */}
           </ScrollView>
         )}
         <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', marginTop: 0, padding: 10}}>

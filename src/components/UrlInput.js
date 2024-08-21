@@ -15,14 +15,14 @@ import {
   import { useNavigation } from '@react-navigation/native';
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
   const UrlInput =  () => {
 
-    const [db, setDb] = React.useState(null);
-    const [isDbReady, setIsDbReady] = React.useState(false);
+    /* const [db, setDb] = React.useState(null);
+    const [isDbReady, setIsDbReady] = React.useState(false); */
     const navigation = useNavigation();
     const current_url = useSelector((state) => state.configReducer.url);
     const [url, setupUrl] = React.useState('');
+
 
     React.useEffect(() => {
       setupUrl(current_url);
@@ -85,8 +85,8 @@ import {
       
     return (
         <>
-            <Text>URL actuelle : {current_url}</Text>
-            <View style={{flexDirection: 'row', justifyContent: "space-between", alignItems: 'flex-start'}}>
+            <Text style={{padding: 15, fontSize:15}}>URL actuelle : {current_url}</Text>
+            <View style={{flexDirection: 'row', justifyContent: "space-between", alignItems: 'flex-start', marginLeft:15, marginBottom:5, marginRight:15}}>
                 
                 <TextInput
                 ref={inputRef}
@@ -97,14 +97,16 @@ import {
                 style={styles.scanArea}
                 />
                 <View style={{flexDirection: 'row', justifyContent: "flex-end", alignItems: 'flex-start'}}>
-                <Pressable onPress={() => {focusOnInput(); setupUrl("")}} style={{padding: 2 }}>
+                <Pressable onPress={() => {focusOnInput(); setupUrl("")}} style={{padding: 2,backgroundColor: '#CEDDED' }}>
                     {/* <MaterialIcons name="qr-code-scanner" size={32} color="#007ACC" /> */}
-                    <Image source={require('../../assets/lightning-bolt-outline.jpg')} style={{width: 40, height: 40}}/>
+                    <Image source={require('../../assets/lightning-bolt-outline.jpg')} style={{width: 35, height: 35, backgroundColor: 'red'}}/>
                 </Pressable>
                 </View>
             </View>
-            <Text> </Text>
-            <Button title="Valider" color="#007FA9" onPress={onPressHandler} />
+            <Pressable onPress={onPressHandler} style={styles.button} >
+              <Text style={styles.buttonText}>Valider</Text>
+            </Pressable>
+            {/* <Button title="Valider" color="#007FA9" onPress={onPressHandler}/> */}
         </>
     );
   };
@@ -119,7 +121,7 @@ import {
       backgroundColor: "white",
       color: "black",
       padding: 5,
-      fontSize: 20,
+      fontSize: 13,
     },
     toolbar: {
       backgroundColor: "#3498db",
@@ -146,10 +148,15 @@ import {
       flex: 1,
     },
     button: {
-      backgroundColor: "#3498db",
+      backgroundColor: '#007FA9',
       padding: 10,
-      borderRadius: 3,
-      marginBottom: 30,
+      borderRadius: 5,
+      alignItems: 'center',
+      margin:15,
+    },
+    buttonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
     },
     centeredView: {
       flex: 1,

@@ -4,6 +4,7 @@ import tokenReducer from "./tokenReducer";
 import apiReducer from "./apiReducer";
 import bcReducer from "./bcReducer";
 import pcesAccsReducer from "./pcesAccsReducer";
+import configReducer from "./configReducer";
 import {createLogger} from 'redux-logger';
 import thunk from 'redux-thunk';
 import ExpoFileSystemStorage from 'redux-persist-expo-filesystem';
@@ -25,6 +26,7 @@ const appReducers = combineReducers({
   apiReducer,
   bcReducer,
   pcesAccsReducer,
+  configReducer,
 });
 
 
@@ -33,11 +35,11 @@ const logger = createLogger();
 const persistConfig = {
   key: 'root',
   storage: ExpoFileSystemStorage,
-  whitelist: ['tokenReducer', 'bcReducer', 'pcesAccsReducer'],
+  whitelist: ['tokenReducer', 'bcReducer', 'pcesAccsReducer', 'configReducer'],
   timeout: 200000,
-}
+};
 
-const persistedReducer = persistReducer(persistConfig, appReducers)
+const persistedReducer = persistReducer(persistConfig, appReducers);
 
 /* const store = configureStore({
   reducer: persistedReducer,
@@ -54,9 +56,9 @@ const store = configureStore({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }).concat(thunk),
+  }).concat(thunk, logger),
 });
 
-const persistor = persistStore(store)
+const persistor = persistStore(store);
 
-export default { store, persistor }
+export default { store, persistor };

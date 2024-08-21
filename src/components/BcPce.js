@@ -19,6 +19,8 @@ const BcPce = ( {piece, loaded, headColor} ) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [text, setText] = React.useState(piece.pce_observ_bc);
   const [isOpened, setIsOpened] = React.useState(false);
+  const [borderColor1, setBorderColor1] = React.useState('#00334A');
+  const [borderColor2, setBorderColor2] = React.useState('#00334A');
 
   const isActionBeingExecuted = useSelector((state) => state.tokenReducer.isActionBeingPerformed);
 
@@ -102,9 +104,9 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                 <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%', color: txtHeader}}>{piece.pce_nom_etude}</Text>
                 <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems: 'flex-start', marginRight: -5}}>
                   <Text style={{color: txtHeader}}>Poids : {hasNullValue(piece.pce_poids)?"": formatPoids(piece)}  </Text>
-                  <Pressable onPress={() => dispatch(changePceLoadedStatus(pce))}>
+                  <Pressable onPress={() => dispatch(changePceLoadedStatus(pce))} onPressIn={() => setBorderColor1('red')} onPressOut={() => setBorderColor1('#00334A')}>
                     {/* <Text>{loaded?<MaterialCommunityIcons name="truck-remove" size={28} color="red" />: <MaterialCommunityIcons name="truck-plus" size={28} color="green" />}</Text> */}
-                    {loaded?<Image source={require('../../assets/download-box-outline.jpg')} style={{width: 40, height: 40}}/>: <Image source={require('../../assets/upload-box-outline.jpg')} style={{width: 40, height: 40}}/>}
+                    {loaded?<Image source={require('../../assets/download-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 2}}/>: <Image source={require('../../assets/upload-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 2}}/>}
                   </Pressable> 
                 </View>
               </View>
@@ -143,9 +145,9 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                     </View>
                   </View>
                 </Modal>
-                <Pressable  style={{paddingRight: 0, paddingTop: 0, borderColor: 'black', borderWidth: 0.5}}onPress={() => { setModalVisible(true); }}>
+                <Pressable  style={{paddingRight: 0, paddingTop: 0}}onPress={() => { setModalVisible(true); }} onPressIn={() => setBorderColor2('red')} onPressOut={() => setBorderColor2('#00334A')}>
                   {/* <FontAwesome name="pencil-square" size={28} color="#007AFF" /> */}
-                  <Image source={require('../../assets/pencil-box.jpg')} style={{width: 40, height: 40}}/>
+                  <Image source={require('../../assets/pencil-box.jpg')} style={{width: 40, height: 40, borderColor: borderColor2, borderWidth: 2}}/>
                 </Pressable>
               </View>
             </View>
