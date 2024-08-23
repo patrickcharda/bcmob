@@ -18,6 +18,7 @@ import * as Device from 'expo-device';
 import * as Application from 'expo-application';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AntDesign } from '@expo/vector-icons';
 //import { BASE_URL } from "../env";
 
 
@@ -455,7 +456,10 @@ const BcList = () => {
         ) : (
           <ScrollView>
             <Pressable onPress={() => setIsOpen(!isOpen)} style={{fontWeight: 'bold', fontSize: 24,backgroundColor: '#82CFD8', padding: 5}}>
-              <Text style={{fontWeight: 'bold', fontSize: 24}}>{isOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', maxHeight:46, padding: 5 }}>
+                <Text style={{fontWeight: 'bold', fontSize: 22}}>{isOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
+                {isOpen?<AntDesign name="downcircle" size={22} color="white" />:<AntDesign name="leftcircle" size={22} color="white" />}
+              </View>
             </Pressable>
             {isOpen &&
               data.map((bc, index) => (
@@ -491,9 +495,12 @@ const BcList = () => {
         {loading ? (
           <ActivityIndicator size="large" color="blue" />
         ) : (
-          <View style={{marginBottom: 40}}> 
+          <View style={{marginBottom: 30}}> 
             <Pressable onPress={() => setIsReinitOpen(!isReinitOpen)} style={{fontWeight: 'bold', fontSize: 24,backgroundColor: '#82CFD8', padding: 5}}>
-              <Text style={{fontWeight: 'bold', fontSize: 24}}>{isReinitOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', maxHeight:46, padding: 5 }}>
+                <Text style={{fontWeight: 'bold', fontSize: 22}}>{isReinitOpen ? "Fermer la liste" : "Ouvrir la liste"}</Text>
+                {isReinitOpen?<AntDesign name="downcircle" size={22} color="white" />:<AntDesign name="leftcircle" size={22} color="white" />}
+              </View>
             </Pressable>
             { isReinitOpen &&
               data.map((BC, idx) => (

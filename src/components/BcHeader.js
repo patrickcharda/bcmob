@@ -60,7 +60,7 @@ const BcHeader = ({ currentBc }) => {
 
   return (
 
-        <ScrollView style={{ backgroundColor: 'white'}}>
+        <ScrollView style={{position: 'absolute', right: 0, top: 0, left:0,  backgroundColor: 'white', zIndex:3}}>
             {/* <Text>{'\n'}</Text> */}
             <View style={{flexDirection: 'row', justifyContent:'flex-start', paddingRight: 10, backgroundColor: '#fff', minHeight: 40}}><Text style={{...styles.textHeader, maxWidth: '40%'}}>Observations : </Text><Text style={{...styles.textContent, maxWidth: '50%'}}>{hasNullValue(bc.bc_observ)?"" : bc.bc_observ}</Text>
             {/* <View style={{flexDirection: 'row', justifyContent:'space-between', paddingRight: 10, backgroundColor: '#fff', minHeight: 40}}><Text style={styles.textHeader}>Observations : </Text><Text style={{...styles.textContent, maxWidth: '50%'}}>{hasNullValue(bc.bc_observ)?"" : bc.bc_observ}</Text> */}

@@ -65,6 +65,7 @@ const Bc = ({ tabPces }) => {
   const [buttonColor1, setButtonColor1] = React.useState('#00334A');
   const [buttonColor2, setButtonColor2] = React.useState('#00334A');
   const [buttonColor3, setButtonColor3] = React.useState('#00334A');
+  const [bgHeaderBCColor, setBgHeaderBCColor] = React.useState(true);
 
   const getFormatedDate = () => {
     let dateMajBLModifie = new Date();
@@ -83,6 +84,10 @@ const Bc = ({ tabPces }) => {
       String(dateMajBLModifie.getSeconds()).padStart(2, '0');
     return formatedDate;
   }
+
+  const defineBgHeaderBCColor = () => {
+    return bgHeaderBCColor ? "#00334A" : "#6DA557";
+  };
 
   /* recupération des listes de pièces du state */
   const pces = useSelector((state) => state.pcesAccsReducer.pces);
@@ -261,7 +266,7 @@ const Bc = ({ tabPces }) => {
       }
 
       // Forcer màj date pce_date_web des pces du bc
-      let reqBody = {
+      /* let reqBody = {
         "bc_num": bonChargement.bc_num,
         "username": username,
       }
@@ -276,11 +281,11 @@ const Bc = ({ tabPces }) => {
             fingerprint: fingerprint,
           },
         }
-      );
+      ); */
 
       //màj a) la date pr le state du BC b) les observations du BC au niveau de PostgreSQL
       let recordDate = getFormatedDate();
-      console.log("LA DATE "+recordDate);
+      //console.log("LA DATE "+recordDate);
       let reqBody2 = {
         "bc_observ": bonChargement.bc_observ,
         "bc_date_web": recordDate,
@@ -695,7 +700,7 @@ const Bc = ({ tabPces }) => {
       <View style={styles.container1}>
         {/* espace pr entête BC + listes de pièces */}
 
-          <Pressable onPress={() => setIsOpened(!isOpened)} style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', backgroundColor: '#00334A', maxHeight:46, padding: 5 }}>
+          <Pressable onPress={() => {setIsOpened(!isOpened); setBgHeaderBCColor(!bgHeaderBCColor)}} style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', backgroundColor: defineBgHeaderBCColor(), maxHeight:46, padding: 5 }}>
             <View>
               <Text style={{fontWeight: 'bold', fontSize: 25, maxHeight: 40, color: 'white'}}>BC n° {bonChargement.bc_num}  </Text>
               {/* {isOpened ?<AntDesign name="downcircleo" size={20} color="white" style={{paddingTop: 10}}/>:<AntDesign name="leftcircleo" size={20} color="white" style={{paddingTop: 10}}/>} */}

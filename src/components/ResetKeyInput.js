@@ -69,7 +69,9 @@ const ResetKeyInput = () => {
           >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text>Cette action permet de réinitialiser la table des bons de commande...</Text>
+              <Text>Effacer le contexte de suivi des BC entre les terminaux et le serveur Web (T_BC_OPEN).{"\n"}
+                Cette commande n'affecte pas les données de BT Livraison.
+              </Text>
               <View style={styles.modalBtns}>
                 <Pressable style={styles.oneBtn} onPress={handleConfirm}>
                   <Text style={styles.txtBtn}>Confirmer</Text>
