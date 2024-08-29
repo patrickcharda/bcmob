@@ -11,7 +11,7 @@ import {
   Image
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { changePceLoadedStatus, changePceObservBc } from "../redux/actions";
+import { changePceLoadedStatus, changePceObservBc, AddIdPce } from "../redux/actions";
 import * as React from "react";
 
 const BcPce = ( {piece, loaded, headColor} ) => {
@@ -47,6 +47,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
       "texte": text,
     }
     dispatch(changePceObservBc(data));
+    dispatch(AddIdPce(piece.id));
     setModalVisible(false);
   };
 
@@ -104,7 +105,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                 <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%', color: txtHeader}}>{piece.pce_nom_etude}</Text>
                 <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems: 'flex-start', marginRight: -5}}>
                   <Text style={{color: txtHeader}}>Poids : {hasNullValue(piece.pce_poids)?"": formatPoids(piece)}  </Text>
-                  <Pressable onPress={() => dispatch(changePceLoadedStatus(pce))} onPressIn={() => setBorderColor1('red')} onPressOut={() => setBorderColor1('#00334A')}>
+                  <Pressable onPress={() => {dispatch(changePceLoadedStatus(pce));dispatch(AddIdPce(pce.id));}} onPressIn={() => setBorderColor1('red')} onPressOut={() => setBorderColor1('#00334A')}>
                     {/* <Text>{loaded?<MaterialCommunityIcons name="truck-remove" size={28} color="red" />: <MaterialCommunityIcons name="truck-plus" size={28} color="green" />}</Text> */}
                     {loaded?<Image source={require('../../assets/download-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 2}}/>: <Image source={require('../../assets/upload-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 2}}/>}
                   </Pressable> 

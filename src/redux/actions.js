@@ -47,12 +47,21 @@ export const CHANGE_ACC_DATE = "CHANGE_ACC_DATE";
 export const CHANGE_ACC_OBSERV_BC = "CHANGE_ACC_OBSERV_BC";
 export const CHANGE_LOAD_ACC = "CHANGE_LOAD_ACC";
 export const SEARCH_PCE_ID = "SEARCH_PCE_ID";
+export const ADD_ID_PCE = "ADD_ID_PCE";
 
 //action's type to set application
 export const SET_BACKURL = "SET_BACKURL";
 export const SET_URL = "SET_URL";
 
 //action creators for API to get pces and accs...
+
+export const AddIdPce = (id) => {
+  //console.error("ID "+id);
+  return { 
+    type: ADD_ID_PCE,
+    payload: id,
+  };
+};
 
 export const searchPceId = (pce_num) => {
   return {
