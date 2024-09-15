@@ -22,7 +22,8 @@ import {
   CHANGE_ACC_OBSERV_BC,
   CHANGE_LOAD_ACC,
   SEARCH_PCE_ID,
-  ADD_ID_PCE,
+  ADD_PCE,
+  EMPTY_PCES_CHANGED,
 } from "./actions";
 
 const initialState = {
@@ -57,11 +58,17 @@ const getFormatedDate = () => {
 
 const pcesAccsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_ID_PCE:
-      //console.error(action.payload);
+    case EMPTY_PCES_CHANGED:
       return {
         ...state,
-        pcesChanged: [...state.pcesChanged, action.payload]
+        pcesChanged:[]
+      }
+    case ADD_PCE:
+      console.error(action.payload);
+      let changedPce = Object.assign({},action.payload);
+      return {
+        ...state,
+        pcesChanged: [...state.pcesChanged, changedPce]
       }
     case SEARCH_PCE_ID:
       let pce_num = action.payload;

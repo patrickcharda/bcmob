@@ -39,7 +39,7 @@ const BcLast = () => {
     <View style={{backgroundColor: '#9CD2D5', position : 'absolute', bottom: 55, left: 0, flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', minWidth: '100%'}}>
       {!isBcEmpty && (
         <TouchableOpacity onPress={() => openBc(tabPces)} >
-          <Text style={{color: 'black', fontSize: 24}}>{ 'Réouvrir le BC n° : '}{lastEditedBc.bc_num}</Text>
+          <Text style={{color: 'black', fontSize: 20}}>{ 'Réouvrir le BC '}{lastEditedBc.bc_num}</Text>
         </TouchableOpacity>
       )}
     </View>

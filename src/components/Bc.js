@@ -5,7 +5,7 @@ import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { defineMessage, changePceDate, changePceLoadedDate, changePcePropDate, changePceOtherDate, loadFullPcesTab, loadLoadedPcesTab,
    loadPropPcesTab, loadOtherPcesTab, loadLoadedAccs, loadPropAccs, loadAccs, changeAccDate,
-    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc } from "../redux/actions";
+    purgeBc, purgePcesAccs, actionInProgress, defineErrormsg, defineMsg, recordSelectedBc, emptyPcesChanged } from "../redux/actions";
 import {
   ScrollView,
   View,
@@ -44,7 +44,6 @@ console.log("UUID : "+fingerprint);
 const NB_ITER = 5;
 const DELAY_N_SECONDS = 3000;
 
-
 const Bc = ({ tabPces }) => {
   
   const token = useSelector((state) => state.tokenReducer.token);
@@ -66,6 +65,30 @@ const Bc = ({ tabPces }) => {
   const [buttonColor2, setButtonColor2] = React.useState('#00334A');
   const [buttonColor3, setButtonColor3] = React.useState('#00334A');
   const [bgHeaderBCColor, setBgHeaderBCColor] = React.useState(true);
+  const [btnListLoadColor, setBtnListLoadColor] = React.useState('#007FA9');
+  const [btnListPropColor, setBtnListPropColor] = React.useState('#82CFD8');
+  const [btnListOtherColor, setBtnListOtherColor] = React.useState('#CEDDDE');
+  
+  const handleClickInLoadList = () => {
+    setBtnListLoadColor('#6DA557')
+  };
+  const handleClickOutLoadList = () => {
+    setBtnListLoadColor('#007FA9')
+  };
+
+  const handleClickInPropList = () => {
+    setBtnListPropColor('#6DA557')
+  };
+  const handleClickOutPropList = () => {
+    setBtnListPropColor('#82CFD8')
+  };
+
+  const handleClickInOtherList = () => {
+    setBtnListOtherColor('#6DA557')
+  };
+  const handleClickOutOtherList = () => {
+    setBtnListOtherColor('#CEDDDE')
+  };
 
   const getFormatedDate = () => {
     let dateMajBLModifie = new Date();
@@ -82,6 +105,7 @@ const Bc = ({ tabPces }) => {
       String(dateMajBLModifie.getMinutes()).padStart(2, '0') +
       ":" +
       String(dateMajBLModifie.getSeconds()).padStart(2, '0');
+      //console.error(formatedDate);
     return formatedDate;
   }
 
@@ -94,6 +118,7 @@ const Bc = ({ tabPces }) => {
   const pcesLoaded = useSelector((state) => state.pcesAccsReducer.pcesLoaded);
   const pcesProp = useSelector((state) => state.pcesAccsReducer.pcesProp);
   const pcesOther = useSelector((state) => state.pcesAccsReducer.pcesOther);
+  const pcesChanged = useSelector((state) => state.pcesAccsReducer.pcesChanged);
 
   /* récupération des produits du state */
   const accs = useSelector((state) => state.pcesAccsReducer.accs);
@@ -224,10 +249,10 @@ const Bc = ({ tabPces }) => {
       dispatch(actionInProgress(true));
       dispatch(defineMsg("enregistrement en cours"));
 
-      pces.map(pce => dispatch(changePceDate(pce)));
+      /* pces.map(pce => dispatch(changePceDate(pce)));
       pcesLoaded.map(pce => dispatch(changePceLoadedDate(pce)));
       pcesProp.map(pce => dispatch(changePcePropDate(pce)));
-      pcesOther.map(pce => dispatch(changePceOtherDate(pce)));
+      pcesOther.map(pce => dispatch(changePceOtherDate(pce))); */
       
       /* let newPces, newPcesLoaded, newPcesProp, newPcesOther;
 
@@ -252,11 +277,17 @@ const Bc = ({ tabPces }) => {
         let chunk = pces.slice(i, i + 250);
         sliced_tabs.push(chunk);
       }
+      // mise à jour via tableau des seules pces modifiées
+      /* for (let i = 0; i < pcesChanged.length; i += 250) {
+        let chunk = pcesChanged.slice(i, i + 250);
+        sliced_tabs.push(chunk);
+      } */
 
       //màj les pces ds la bdd, tronçon de n par tronçon de n
       for (let j = 0; j < sliced_tabs.length; j++) {
         await patchBlocPces(sliced_tabs[j]);
       }
+      //dispatch(emptyPcesChanged());
       //màj les accessoires s'il y en a
       if (accs.length > 0) {
         accs.map(access => dispatch(changeAccDate(access)));
@@ -324,7 +355,6 @@ const Bc = ({ tabPces }) => {
       setIsActionBeingExecuted(true);
       dispatch(actionInProgress(true));
       await recordBc();
-      //await recordBc();
       setIsActionBeingExecuted(true);
       dispatch(actionInProgress(true));
 
@@ -700,9 +730,9 @@ const Bc = ({ tabPces }) => {
       <View style={styles.container1}>
         {/* espace pr entête BC + listes de pièces */}
 
-          <Pressable onPress={() => {setIsOpened(!isOpened); setBgHeaderBCColor(!bgHeaderBCColor)}} style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', backgroundColor: defineBgHeaderBCColor(), maxHeight:46, padding: 5 }}>
+          <Pressable onPress={() => {setIsOpened(!isOpened);}} onPressIn={() => setBgHeaderBCColor(!bgHeaderBCColor)} onPressOut={() => setBgHeaderBCColor(!bgHeaderBCColor)} style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', backgroundColor: defineBgHeaderBCColor(), maxHeight:46, padding: 5 }}>
             <View>
-              <Text style={{fontWeight: 'bold', fontSize: 25, maxHeight: 40, color: 'white'}}>BC n° {bonChargement.bc_num}  </Text>
+              <Text style={{fontWeight: 'bold', fontSize: 25, maxHeight: 40, color: 'white'}}>BC {bonChargement.bc_num}  </Text>
               {/* {isOpened ?<AntDesign name="downcircleo" size={20} color="white" style={{paddingTop: 10}}/>:<AntDesign name="leftcircleo" size={20} color="white" style={{paddingTop: 10}}/>} */}
               
             </View>
@@ -713,7 +743,7 @@ const Bc = ({ tabPces }) => {
 
         {isOpened && <View><BcHeader currentBc={bonChargement} /></View>}
         <ScrollView>
-          <Pressable onPress = {()=>{setIsLoadListOpen(!isLoadListOpen)}} style={{backgroundColor:'#007FA9'}}>
+          <Pressable onPress = {()=>{setIsLoadListOpen(!isLoadListOpen)}} style={{backgroundColor:btnListLoadColor}} onPressIn={ handleClickInLoadList } onPressOut={ handleClickOutLoadList }>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
               <Text style={{...styles.defaultText, color: 'white'}}> Pièces chargées {piecesLoaded.length} / {pces.length}</Text>
               {isLoadListOpen?<AntDesign name="downcircle" size={24} color="white" />:<AntDesign name="leftcircle" size={24} color="white" />} 
@@ -723,7 +753,7 @@ const Bc = ({ tabPces }) => {
             piecesLoaded.map((piece) => (
             <BcPce key={piece.id} piece={piece} loaded={true} headColor='#007FA9'/>
           ))}
-          <Pressable onPress = {()=>{setIsPropListOpen(!isPropListOpen)}} style={{backgroundColor:'#82CFD8'}}>
+          <Pressable onPress = {()=>{setIsPropListOpen(!isPropListOpen)}} style={{backgroundColor:btnListPropColor}} onPressIn={ handleClickInPropList } onPressOut={ handleClickOutPropList }>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
               <Text style={styles.defaultText}> Pièces Proposées {piecesProp.length} / {pces.length}</Text>
               {isPropListOpen?<AntDesign name="downcircle" size={24} color="black" />:<AntDesign name="leftcircle" size={24} color="black" />} 
@@ -733,7 +763,7 @@ const Bc = ({ tabPces }) => {
             piecesProp.map((piece) => (
             <BcPce key={piece.id} piece={piece} loaded={false} headColor='#82CFD8'/>
           ))}
-          <Pressable onPress = {()=>{setIsOtherListOpen(!isOtherListOpen)}} style={{backgroundColor:'#CEDDDE'}}>
+          <Pressable onPress = {()=>{setIsOtherListOpen(!isOtherListOpen)}} style={{backgroundColor:btnListOtherColor}} onPressIn={ handleClickInOtherList } onPressOut={ handleClickOutOtherList }>
             <View style={{flexDirection: 'row', justifyContent:'space-between', padding: 5}}>
               <Text style={styles.defaultText}> Pièces Autres {piecesOther.length} / {pces.length}</Text>
               {isOtherListOpen?<AntDesign name="downcircle" size={24} color="black" />:<AntDesign name="leftcircle" size={24} color="black" />} 
@@ -779,21 +809,21 @@ const Bc = ({ tabPces }) => {
             {/* <Text>{"\n"}</Text> */}
             {/* <Button onPress={() => valideBc()} title="Valider"></Button> */}
             <View style={{flex: 3, margin: 2}}>
-              <Pressable style={{backgroundColor: buttonColor1, padding: 4}}  onPress={() => valideBc()} onPressIn={() => setButtonColor1('#007FA9')} onPressOut={() => setButtonColor1('#00334A')} disabled={isActionBeingExecuted}>
-              <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Enregistrer</Text>
+              <Pressable style={{backgroundColor: buttonColor1, padding: 4}}  onPress={() => valideBc()} onPressIn={() => setButtonColor1('#6DA557')} onPressOut={() => setButtonColor1('#00334A')} disabled={isActionBeingExecuted}>
+              <Text style={{ color: '#ffffff', fontSize: 15, textAlign: "center", fontWeight: 'bold' }}>Enregistrer</Text>
               </Pressable>
               {/* <Text>{"\n"}</Text> */}
             </View>
             <View style={{flex: 3, margin: 2}}>
-              <Pressable style={{backgroundColor: buttonColor2, padding: 4}}  onPress={() => livreBc()} onPressIn={() => setButtonColor2('#005577')} onPressOut={() => setButtonColor2('#00334A')} disabled={isActionBeingExecuted}>
-              <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Livrable</Text>
+              <Pressable style={{backgroundColor: buttonColor2, padding: 4}}  onPress={() => livreBc()} onPressIn={() => setButtonColor2('#6DA557')} onPressOut={() => setButtonColor2('#00334A')} disabled={isActionBeingExecuted}>
+              <Text style={{ color: '#ffffff', fontSize: 15, textAlign: "center", fontWeight: 'bold' }}>Livrable</Text>
               </Pressable>
               {/* <Text>{"\n"}</Text> */}
             </View>
             {/* <Button title="Réinitialiser" onPress={() => {setModalReinitVisible(true);}} /> */}
             <View style={{flex: 3, margin :2}}>
-              <Pressable style={{backgroundColor: buttonColor3, padding: 4}}  onPress={() => {setModalReinitVisible(true);}} onPressIn={() => setButtonColor3('#005577')} onPressOut={() => setButtonColor3('#00334A')} disabled={isActionBeingExecuted}>
-                <Text style={{ color: '#ffffff', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Réinitialiser</Text>
+              <Pressable style={{backgroundColor: buttonColor3, padding: 4}}  onPress={() => {setModalReinitVisible(true);}} onPressIn={() => setButtonColor3('#6DA557')} onPressOut={() => setButtonColor3('#00334A')} disabled={isActionBeingExecuted}>
+                <Text style={{ color: '#ffffff', fontSize: 15, textAlign: "center", fontWeight: 'bold' }}>Réinitialiser</Text>
               </Pressable>
               { modalReinitVisible &&
                   <Modal
@@ -931,7 +961,7 @@ const styles = StyleSheet.create({
     padding : 20
   },
   txtBtn: {
-    fontSize: 20,
+    fontSize: 15,
     padding: 5,
     backgroundColor: '#007FA9',
     color: '#ffffff',

@@ -13,11 +13,11 @@ import axios from 'axios';
 const Session = ({ username, password, appLogin, endpointLogout, appliname }) => {
 
   var logged = useSelector((state) => state.tokenReducer.isLogged);
-  console.log("first logged "+logged);
+  //console.log("first logged "+logged);
   var refreshToken = useSelector((state) => state.tokenReducer.refreshToken);
-  console.log("first refresh token "+refreshToken);
+  //console.log("first refresh token "+refreshToken);
   var accessToken = useSelector((state) => state.tokenReducer.token);
-  console.log("first token "+accessToken);
+  //console.log("first token "+accessToken);
 
   const userAppLogout = async () => {
     try {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     padding : 20
   },
   txtBtn: {
-    fontSize: 20,
+    fontSize: 15,
     padding: 5,
     backgroundColor: '#007FA9',
     color: '#ffffff',

@@ -133,7 +133,7 @@ const apiCall = (url, token, tableau = []) => (dispatch) => {
   }
   if (url.includes("/bcweb/ouvrir/")) {
     dispatch(fetchData());
-    return new Promise(() => {
+    return new Promise((resolve, reject) => {
       let data = {
         "username": tableau[0],
         "bc_num": tableau[1]
@@ -147,18 +147,21 @@ const apiCall = (url, token, tableau = []) => (dispatch) => {
               dispatch(signout());
               break;
             case 200:
-              console.log("commande ouvrir ok");
+              //console.log("commande ouvrir ok");
+              dispatch(fetchSuccess(response.data));
+              resolve(response);
               break;
             case 201:
             case 202:
               console.log("commande ouvrir OK");
-              dispatch(fetchSuccess(response.data));
+              //dispatch(fetchSuccess(response.data));
               break;
           }
         })
         .catch((error) => {
           dispatch(fetchError(error.message));
-          //console.log("erreur : ", error);
+          console.log("erreur : ", error);
+          reject(error);
         });
     });
   }

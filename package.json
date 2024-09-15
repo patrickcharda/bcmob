@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@expo/config-plugins": "^8.0.4",
+    "@expo/vector-icons": "^14.0.2",
+    "@mdi/js": "^7.4.47",
+    "@mdi/react": "^1.6.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-picker/picker": "2.7.5",
     "@react-native/metro-config": "^0.75.0-main",
@@ -34,6 +37,7 @@
     "react-native-screens": "3.31.1",
     "react-native-tooltip-menu": "^3.0.7",
     "react-native-uuid": "^2.0.2",
+    "react-native-vector-icons": "^10.1.0",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",

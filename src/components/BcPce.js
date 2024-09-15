@@ -11,7 +11,7 @@ import {
   Image
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { changePceLoadedStatus, changePceObservBc, AddIdPce } from "../redux/actions";
+import { changePceLoadedStatus, changePceObservBc, AddPce } from "../redux/actions";
 import * as React from "react";
 
 const BcPce = ( {piece, loaded, headColor} ) => {
@@ -47,7 +47,7 @@ const BcPce = ( {piece, loaded, headColor} ) => {
       "texte": text,
     }
     dispatch(changePceObservBc(data));
-    dispatch(AddIdPce(piece.id));
+    //dispatch(AddPce(piece));
     setModalVisible(false);
   };
 
@@ -72,8 +72,10 @@ const BcPce = ( {piece, loaded, headColor} ) => {
     /* let newDate = new Date(strDate);
     let newStrFormatedDate = newDate.getDate() + "/" + (newDate.getMonth() + 1) + "/" + newDate.getFullYear();
     return newStrFormatedDate; */
+    //console.error('date reçue ' +strDate);
     var newDate = new Date(strDate);
-    var dd = String(newDate.getDate()).padStart(2, '0');
+    //console.error('old_newdate '+newDate);
+    /*var dd = String(newDate.getDate()).padStart(2, '0');
     var mm = String(newDate.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = newDate.getFullYear();
 
@@ -81,7 +83,20 @@ const BcPce = ( {piece, loaded, headColor} ) => {
     var min = String(newDate.getMinutes()).padStart(2, '0');
     var ss = String(newDate.getSeconds()).padStart(2, '0');
 
-    newDate = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min + ':' + ss;
+    newDate = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min + ':' + ss; */
+    
+    // Convertir en heure locale
+    let options = { timeZone: 'Europe/Paris', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    let localDate = newDate.toLocaleString('fr-FR', options);
+
+    // Extraire les composants de la date locale
+    let [datePart, timePart] = localDate.split(' ');
+    let [dd, mm, yyyy] = datePart.split('/');
+    let [hh, min, ss] = timePart.split(':');
+
+    newDate = `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
+
+    //console.error('newdate '+newDate);
     return newDate;
   }
 
@@ -100,21 +115,22 @@ const BcPce = ( {piece, loaded, headColor} ) => {
         <SafeAreaView>
           <ScrollView>
             <Pressable onPress={() => setIsOpened(!isOpened)} >
-              <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems: 'flex-start', paddingRight: 5, backgroundColor: headColor}}>
-                <Text style={{color: txtHeader}}> {piece.pce_num} </Text>
-                <Text style={{fontWeight: 'bold', fontSize: 15, flexGrow: 0.5, maxWidth: '50%', color: txtHeader}}>{piece.pce_nom_etude}</Text>
-                <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems: 'flex-start', marginRight: -5}}>
-                  <Text style={{color: txtHeader}}>Poids : {hasNullValue(piece.pce_poids)?"": formatPoids(piece)}  </Text>
-                  <Pressable onPress={() => {dispatch(changePceLoadedStatus(pce));dispatch(AddIdPce(pce.id));}} onPressIn={() => setBorderColor1('red')} onPressOut={() => setBorderColor1('#00334A')}>
+              <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems: 'flex-start', paddingRight: 0, backgroundColor: headColor}}>
+                <Text style={{color: txtHeader, fontSize: 13}}> {piece.pce_num} </Text>
+                <Text style={{fontWeight: 'bold', fontSize: 13, flexGrow: 0.5, maxWidth: '50%', color: txtHeader}}>{piece.pce_nom_etude}</Text>
+                <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems: 'flex-start', marginRight: 0}}>
+                  <Text style={{color: txtHeader, fontSize: 13}}>{hasNullValue(piece.pce_poids)?"": formatPoids(piece) +' T'}  </Text>
+                  <Pressable style={{paddingRight: 0, paddingTop: 0, width: 40, height: 40, marginRight: 0 }}  onPress={() => {dispatch(changePceLoadedStatus(pce));}} onPressIn={() => setBorderColor1('#6DA557')} onPressOut={() => setBorderColor1('#00334A')}>
                     {/* <Text>{loaded?<MaterialCommunityIcons name="truck-remove" size={28} color="red" />: <MaterialCommunityIcons name="truck-plus" size={28} color="green" />}</Text> */}
-                    {loaded?<Image source={require('../../assets/download-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 2}}/>: <Image source={require('../../assets/upload-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 2}}/>}
+                    {loaded?<Image source={require('../../assets/download-box-outline.jpg')} style={{width: 40, height: 40, borderColor: borderColor1, borderWidth: 3}}/>: <Image source={require('../../assets/upload-box-outline.jpg')} style={{width: 40, height: 40
+                      , borderColor: borderColor1, borderWidth: 3}}/>}
                   </Pressable> 
                 </View>
               </View>
             </Pressable>
-            <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems: 'flex-start', backgroundColor: '#fff', paddingTop: 0}}>
+            <View style={{flexDirection: 'row', justifyContent:'space-between', alignItems: 'flex-start', backgroundColor: '#fff', paddingTop: 0, paddingRight: 0, marginRight: 0}}>
               <Text style={{fontWeight: 'bold'}}>Observations : </Text>
-              <Text style={{flexGrow: 0.5, maxWidth: '50%'}}>{hasNullValue(piece.pce_observ_bc)?"": piece.pce_observ_bc} </Text>
+              <Text style={{flexGrow: 0.65, maxWidth: '57%'}}>{hasNullValue(piece.pce_observ_bc)?"": piece.pce_observ_bc} </Text>
               <View>
                 <Modal
                   animationType="slide"
@@ -146,13 +162,13 @@ const BcPce = ( {piece, loaded, headColor} ) => {
                     </View>
                   </View>
                 </Modal>
-                <Pressable  style={{paddingRight: 0, paddingTop: 0}}onPress={() => { setModalVisible(true); }} onPressIn={() => setBorderColor2('red')} onPressOut={() => setBorderColor2('#00334A')}>
+                <Pressable onPress={() => { setModalVisible(true); }} onPressIn={() => setBorderColor2('#6DA557')} onPressOut={() => setBorderColor2('#00334A')}>
                   {/* <FontAwesome name="pencil-square" size={28} color="#007AFF" /> */}
-                  <Image source={require('../../assets/pencil-box.jpg')} style={{width: 40, height: 40, borderColor: borderColor2, borderWidth: 2}}/>
+                  <Image source={require('../../assets/pencil-box.jpg')} style={{width: 40, height: 40, borderColor: borderColor2, borderWidth: 3}}/>
                 </Pressable>
               </View>
             </View>
-            <View style={{borderTopColor:'gray', borderTopWidth:0.5}}>
+            <View style={{borderTopColor:'gray', borderTopWidth:0.}}>
               {isOpened && 
               <View>
                 {/* <Text>{pieceJson}</Text> */}

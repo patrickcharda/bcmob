@@ -30,7 +30,7 @@ const appReducers = combineReducers({
 });
 
 
-const logger = createLogger();
+//const logger = createLogger();
 
 const persistConfig = {
   key: 'root',
@@ -56,7 +56,7 @@ const store = configureStore({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }).concat(thunk, logger),
+  }).concat(thunk),
 });
 
 const persistor = persistStore(store);

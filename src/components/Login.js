@@ -17,10 +17,6 @@ import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-//import { BASE_URL } from '../env';
-//import * as SQLite from 'expo-sqlite';
-
-//27/05/2024
 
 const appliname = "bcweb";
 /* const fingerprint = Application.getAndroidId().toString()+Application.nativeBuildVersion+Device.deviceYearClass.toString(); */
@@ -49,18 +45,6 @@ const Login = () => {
   var refreshToken = useSelector((state) => state.tokenReducer.refreshToken);
   var accessToken = useSelector((state) => state.tokenReducer.token);
   const BASE_URL = useSelector((state) => state.configReducer.url);
-
-  /* const createTable = () => {
-    db.transaction((tx) => {
-        tx.executeSql(
-            "CREATE TABLE IF NOT EXISTS "
-            + "bcweb_url "
-            + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, back_url TEXT);"
-        )
-    })
-  } */
-
-    //console.log("BASE URL :"+BASE_URL);
     
   const endpointRefreshToken = BASE_URL+"/apps/apprefresh/";
   const endpointPreLogin = BASE_URL+"/apps/preapplogin/";
@@ -203,8 +187,8 @@ const Login = () => {
             "appliname": "bcweb"
           },
           body: JSON.stringify({
-            "username": "lpb654",
-            "password": "test9876",
+            "username": username,
+            "password": password,
           }),
           redirect: "follow"
         }
@@ -233,7 +217,7 @@ const Login = () => {
 
       let responseData = await response.json();
       let hasSession = responseData.opened_session;
-      console.log(hasSession);
+      console.log("has session ? => "+hasSession);
       if (hasSession === "no") {
         // appeler fonction asynchrone de login
         console.log('no session');

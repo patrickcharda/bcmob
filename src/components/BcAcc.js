@@ -84,6 +84,7 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
     /* let newDate = new Date(strDate);
     let newStrFormatedDate = newDate.getDate() + "/" + (newDate.getMonth() + 1) + "/" + newDate.getFullYear();
     return newStrFormatedDate; */
+    //console.log(strDate);
     var newDate = new Date(strDate);
     var dd = String(newDate.getDate()).padStart(2, '0');
     var mm = String(newDate.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -94,6 +95,7 @@ const BcAcc = ( {accessoire, loaded, headColor} ) => {
     var ss = String(newDate.getSeconds()).padStart(2, '0');
 
     newDate = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min + ':' + ss;
+    //console.error(newDate);
     return newDate;
   }
 

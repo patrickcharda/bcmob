@@ -1,13 +1,42 @@
 import React, { useState } from 'react';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { View, TextInput, Text, Pressable, StyleSheet, Alert, Modal } from 'react-native';
 import axios from 'axios';
+
+
 
 const ResetKeyInput = () => {
   const [inputValue, setInputValue] = useState('');
   const BASE_URL = useSelector((state) => state.configReducer.url);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const username = useSelector((state) => state.tokenReducer.username);
+  const dispatch = useDispatch();
   
+  const reprise = async() => {
+    let result;
+    try {
+      let endpointReprise = BASE_URL+"/bcweb/reprise/"
+      result = await axios.post(
+        endpointReprise,
+        JSON.stringify({
+          "username": username,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Authorization: "Bearer "+token,
+            appliname: appliname,
+            fingerprint: fingerprint,
+          },
+        }
+      );
+    } catch (error) {
+      //console.log("erreur dans la fonction valider du Bc ", error)
+      dispatch(defineErrormsg("erreur dans la fonction reprise "+error));
+    } finally {
+      return result
+    }
+  }
 
   const sendReset = async () => {
     let reqBody = {
@@ -35,9 +64,10 @@ const ResetKeyInput = () => {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     // Handle the confirm action here
-    sendReset();
+    await sendReset();
+    await reprise();
     setModalVisible(false);
   };
 

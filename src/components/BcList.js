@@ -6,6 +6,7 @@ import {
   View,
   Modal,
   Pressable,
+  Alert
 } from "react-native";
 import apiCall from "../redux/apiCall";
 import axios from 'axios';
@@ -57,7 +58,8 @@ const BcList = () => {
   const token = useSelector((state) => state.tokenReducer.token);
   const username = useSelector((state) => state.tokenReducer.username);
   const lastEditedBc = useSelector((state) => state.bcReducer.bc);
-  const err = useSelector((state) => state.apiReducer.error);
+  //const err = useSelector((state) => state.apiReducer.error);
+  //const msg = useSelector((state) => state.apiReducer.message);
   const BASE_URL = useSelector((state) => state.configReducer.url);
   const [isActionBeingPerformed, setIsActionBeingPerformed] = React.useState(false);
 
@@ -67,6 +69,7 @@ const BcList = () => {
   const DELAY_N_SECONDS = 2000;
 
   const endpointCheckok = BASE_URL+"/bcweb/checkok/";
+  const endpointCheckwib = BASE_URL+"/bcweb/checkwib/";
   
   React.useEffect(() => {
     dispatch(apiCall(BASE_URL+"/bcweb/bcx/", token))
@@ -137,13 +140,42 @@ const BcList = () => {
       dispatch(purgePcesAccs());
       dispatch(cleanAllMessagesErrors());
       dispatch(defineMsg("Chargement du BC en cours"));
-      await ouvrir(token, username, bc.bc_num);
+      let res = await ouvrir(token, username, bc.bc_num);
 
-      let tabPces = await checkok(token, username, bc.bc_num); // récupère le tableau de tableaux des pièces chargées, proposées et autres
+      //console.error('res : '+ res); // affiche 'ouvrir'
+       
+      if (res == 'ouvrir') {
+        // vérifier la valeur contenue dans Command pour l'utilisateur, via cmde checkwib
+        let wibResponse = await checkwib();
+        console.log(wibResponse.data.message);
+        if (wibResponse.data.message === "> ok") {
+          let tabPces = await getPieces(token, username, bc.bc_num); // récupère le tableau de tableaux des pièces chargées, proposées et autres
       
-      if (tabPces != "" && tabPces != undefined && tabPces != null) {
-        navigation.navigate('Bc', { tabPces });
-      } 
+          if (tabPces != "" && tabPces != undefined && tabPces != null) {
+            navigation.navigate('Bc', { tabPces });
+          }
+        } else {
+          console.log(wibResponse.data.message);
+          dispatch(defineMessage(wibResponse.data.message+' a déjà ouvert ce BC'));
+          Alert.alert(
+            "BC "+String(bc.bc_num),
+            wibResponse.data.message+' a déjà ouvert ce BC',
+            [
+              {
+                text: "Annuler",
+                onPress: () => console.log("Btn Annuler Pressé"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("Btn OK Pressé") }
+            ],
+            { cancelable: true }
+          );
+        }
+         
+      } else {
+        dispatch(defineMsg("Problème de communication avec le serveur backend"));
+      }
+      
     } catch (error) {
       //console.log("erreur dans la fonction defineBc de BcList ", error)
       dispatch(defineErrormsg("erreur dans la fonction defineBc de BcList "+error))
@@ -151,6 +183,31 @@ const BcList = () => {
     } finally {
       setIsActionBeingPerformed(false);
       dispatch(actionInProgress(false));
+    }
+  };
+
+  const checkwib = async () => {
+    try {
+      await new Promise(resolve => setTimeout(resolve,DELAY_N_SECONDS));
+      const response = await axios.post(
+        endpointCheckwib,
+        JSON.stringify({
+          username: username,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "Authorization": token,
+            "appliname": appliname,
+            "fingerprint": fingerprint,
+          },
+        }
+      );
+      return response;
+      //console.log("hascommandline : "+response.data.id);
+    } catch (error) {
+      Alert.alert("Error", `There was an error while trying to get command result (checkwib) : ${error}`);
+      
     }
   };
 
@@ -221,20 +278,23 @@ const BcList = () => {
     let tab = [];
     tab.push(username);
     tab.push(bc_num); 
-    let result="false";
     try {
       /* qd  un bl est sélectionné ds la liste déroulante, envoi cmde ouvrir pour mettre en pause pdt chargement des données */
       if (bc_num != "") {
-          dispatch(apiCall(BASE_URL+"/bcweb/ouvrir/", token, tab));
-          if (err !=="") {
-            result = true;
+          const response = await dispatch(apiCall(BASE_URL+"/bcweb/ouvrir/", token, tab));
+          // Log the entire response object
+            //console.log("Response:", JSON.stringify(response, null, 2));
+          // Assuming apiCall returns an object with an error property
+          if (response.error) {
+              throw new Error(response.error);
           }
+          //console.error('Response ', JSON.stringify(response.data, null, 2));
+          return response.data.message;
       }
     } catch (error) {
       dispatch(defineError("Problème commande 'ouvrir'"));
-    } finally {
-      return result;
-    }
+      return error.message;
+    } 
   }
 
   const handleConfirm = (currentBC) => {
@@ -253,8 +313,8 @@ const BcList = () => {
     // Handle the cancel action here
     setModalVisible(false);
   };
-  /* cette version de checkok n'attend pas que le ok de l'automate wib, elle récupère aussi ttes les pièces du Bc et les retourne ds un tableau*/
-  const checkok = async (token, username, bc_number) => {
+  /* getPieces n'attend pas que le ok de l'automate wib, elle récupère aussi ttes les pièces du Bc et les retourne ds un tableau*/
+  const getPieces = async (token, username, bc_number) => {
     let tabl = [];
     tabl.push(username);
     let pceLignes = []; // tableau de tableaux qui va contenir les tableaux suivants, càd les listes de pièces chargées, proposées et autres
@@ -465,28 +525,12 @@ const BcList = () => {
               data.map((bc, index) => (
                 <View style={{backgroundColor: '#CEDDED'}} key={index}>
                 <Pressable  style={{padding: 5, backgroundColor: buttonColor[index]}} onPress={isActionBeingPerformed ? null : () => defineBc(bc)} onPressIn={() => handleClickIn(index)} onPressOut={() => handleClickOut(index)} disabled={isActionBeingPerformed}>
-                  <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length} </Text>
+                  <Text style={{fontSize: 15, borderBottomWidth: 0.7, borderColor: 'white'}}>
+                    {bc.bc_num} | {(bc.bc_statut === "" || bc.bc_statut === " " || bc.bc_statut === null || bc.bc_statut === undefined) ? '' :bc.bc_statut + ' | '}{bc.pieces.length >= 0 ? bc.pieces.length + ' pièces' : 'aucune piece'}{(bc.bc_webuser =='' || bc.bc_webuser == undefined || bc.bc_webuser == null) ? "" : ' | ' + bc.bc_webuser}
+                  </Text>
                 </Pressable>
                 </View>
               ))}
-              {/* {isOpen &&
-              data.map((bc, index) => {
-                const [buttonColor, setButtonColor] = React.useState('#CEDDED');
-                  <View style={{backgroundColor: '#CEDDDE'}} key={index}>
-                    <Pressable
-                      style={{padding: 5, backgroundColor: buttonColor}}
-                      onPress={isActionBeingPerformed ? null : () => defineBc(bc)}
-                      onPressIn={() => setButtonColor('#60A545')}
-                      onPressOut={() => setButtonColor('#CEDDED')}
-                      disabled={isActionBeingPerformed}
-                    >
-                      <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>
-                        {bc.bc_num} | {bc.bc_statut} | nb pièces : {bc.pieces.length}
-                      </Text>
-                    </Pressable>
-                  </View>
-              })
-            } */}
           </ScrollView>
         )}
         <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'#007FA9', marginTop: 0, padding: 10}}>
@@ -506,7 +550,10 @@ const BcList = () => {
               data.map((BC, idx) => (
                 <View style={{backgroundColor: '#CEDDDE'}}>
                   <Pressable onPress={() => {setModalVisible(true); setCurrentBC(BC);}} key={idx} style={{padding: 5}}>
-                    <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{BC.bc_num} | {BC.bc_statut} | nb pièces : {BC.pieces.length}</Text>
+                  <Text style={{fontSize: 15, borderBottomWidth: 0.7, borderColor: 'white'}}>
+                    {BC.bc_num} | {(BC.bc_statut === "" || BC.bc_statut === " " || BC.bc_statut === null || BC.bc_statut === undefined) ? '' :BC.bc_statut + ' | '}{BC.pieces.length >= 0 ? BC.pieces.length + ' pièces' : 'aucune piece'}{(BC.bc_webuser =='' || BC.bc_webuser == undefined || BC.bc_webuser == null) ? "" : ' | ' + BC.bc_webuser}
+                  </Text>
+                    {/* <Text style={{fontSize: 20, borderBottomWidth: 0.7, borderColor: 'white'}}>{BC.bc_num} | {BC.bc_statut} | nb pièces : {BC.pieces.length}</Text> */}
                   </Pressable>
                 </View>
               ))
@@ -653,7 +700,7 @@ const styles = StyleSheet.create({
     padding : 20
   },
   txtBtn: {
-    fontSize: 20,
+    fontSize: 15,
     padding: 5,
     backgroundColor: '#007FA9',
     color: '#ffffff',
